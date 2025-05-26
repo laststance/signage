@@ -1,7 +1,7 @@
 {
   "name": "signage",
   "version": "1.0.0",
-  "description": "A modern Electron application template with React, Vite, TypeScript, and TailwindCSS",
+  "description": "Screen Saver App",
   "main": "./out/main/main.js",
   "license": "MIT",
   "repository": {

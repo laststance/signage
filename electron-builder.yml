@@ -1,18 +1,18 @@
-appId: com.guasam.era
-productName: ElectronReactApp
+appId: com.laststance.signage
+productName: Signage
 directories:
   buildResources: resources/build
 files:
   - '!**/.vscode/*'
   - '!src/*'
-  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!vite.config.{js,ts,mjs,cjs}'
   - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
 asarUnpack:
   - resources/**
 win:
-  executableName: ElectronReactApp
+  executableName: Signage
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

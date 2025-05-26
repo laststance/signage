@@ -1,6 +1,6 @@
 {
-  "name": "era",
-  "version": "10.2.0",
+  "name": "signage",
+  "version": "1.0.0",
   "description": "A modern Electron application template with React, Vite, TypeScript, and TailwindCSS",
   "main": "./out/main/main.js",
   "license": "MIT",
@@ -8,10 +8,7 @@
     "type": "git",
     "url": "https://github.com/guasam/electron-react-app"
   },
-  "author": {
-    "name": "Guasam",
-    "url": "https://github.com/guasam"
-  },
+  "author": "Ryota Murakami <dojce1048@gmail.com> (https://github.com/ryota-murakami)",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@tailwindcss/oxide",
@@ -23,7 +20,7 @@
   "scripts": {
     "dev": "electron-vite dev -w",
     "format": "prettier --write .",
-    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts,.vue --fix",
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
     "start": "electron-vite preview",
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "electron-vite build && electron-builder --dir",
@@ -33,7 +30,11 @@
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
-    "@electron-toolkit/utils": "^4.0.0"
+    "@electron-toolkit/utils": "^4.0.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.511.0",
+    "tailwind-merge": "^3.3.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^2.1.0",
@@ -55,6 +56,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "tailwindcss": "^4.1.4",
+    "tw-animate-css": "^1.3.0",
     "typescript": "^5.8.3",
     "vite": "^6.3.2"
   },

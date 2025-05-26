@@ -6,10 +6,8 @@ import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 export default defineConfig({
   main: {
     build: {
-      rollupOptions: {
-        input: {
-          main: resolve(__dirname, 'lib/main/main.ts'),
-        },
+      lib: {
+        entry: 'lib/main/main.ts',
       },
     },
     resolve: {
@@ -23,10 +21,8 @@ export default defineConfig({
   },
   preload: {
     build: {
-      rollupOptions: {
-        input: {
-          preload: resolve(__dirname, 'lib/preload/preload.ts'),
-        },
+      lib: {
+        entry: 'lib/preload/preload.ts',
       },
     },
     resolve: {

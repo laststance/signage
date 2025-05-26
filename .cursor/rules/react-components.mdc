@@ -1,0 +1,90 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# React Components & UI
+
+This project uses React 19 with TypeScript and modern practices for building the renderer UI.
+
+## 📦 Component Organization
+
+### Main Components Directory
+- **Location**: [app/components/](mdc:app/components/)
+- **Main App**: [app/components/App.tsx](mdc:app/components/App.tsx)
+- **UI Components**: [app/components/ui/](mdc:app/components/ui/)
+
+### Welcome Kit
+- **Location**: [lib/welcome/](mdc:lib/welcome/)
+- **Purpose**: Welcome screen and onboarding components
+- **Contents**: [lib/welcome/contents/](mdc:lib/welcome/contents/)
+- **Icons**: [lib/welcome/icons/](mdc:lib/welcome/icons/)
+
+## 🎨 Styling & Design System
+
+### TailwindCSS Configuration
+- **Main Styles**: [app/styles/tailwind.css](mdc:app/styles/tailwind.css)
+- **App Styles**: [app/styles/app.css](mdc:app/styles/app.css)
+- **Config**: [components.json](mdc:components.json) - shadcn/ui configuration
+
+### UI Libraries
+- **shadcn/ui**: Pre-configured component library
+- **Lucide React**: Icon library (`lucide-react`)
+- **Framer Motion**: Animation library for smooth transitions
+- **CVA**: Class Variance Authority for component variants
+- **Tailwind Merge**: Utility for merging Tailwind classes
+
+### Utility Libraries
+- **clsx**: Conditional class names
+- **tailwind-merge**: Merge Tailwind classes intelligently
+- **tw-animate-css**: Additional Tailwind animations
+
+## 🔄 State Management
+
+### React 19 Features
+- **Concurrent Features**: Automatic batching, transitions
+- **Suspense**: For data fetching and code splitting
+- **New Hooks**: `useTransition`, `useDeferredValue`
+
+### Best Practices
+- Use React's built-in state management for local state
+- Leverage Electron's IPC for cross-process communication
+- Consider context for theme/global state
+
+## 🎯 Component Patterns
+
+### Functional Components
+```typescript
+// Preferred pattern with TypeScript
+const Component: React.FC<Props> = ({ prop1, prop2 }) => {
+  return <div>{/* JSX */}</div>
+}
+```
+
+### Props Interface
+```typescript
+interface ComponentProps {
+  title: string
+  optional?: boolean
+  children?: React.ReactNode
+}
+```
+
+### Theme Integration
+- Dark/Light mode toggle built into window controls
+- Theme state managed through custom window implementation
+- TailwindCSS dark mode utilities available
+
+## 🧩 Integration with Electron
+
+### Window API Access
+```typescript
+// Access Electron APIs through preload
+window.api.invoke('get-app-version')
+window.api.send('toggle-theme')
+```
+
+### Asset Handling
+- Static assets in [app/assets/](mdc:app/assets/)
+- Build-time asset processing through Vite
+- Resource files in [resources/](mdc:resources/)

@@ -1,0 +1,54 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Project Structure Guide
+
+This is a modern Electron application with React, TypeScript, Vite, and TailwindCSS. The project follows a clean separation between main and renderer processes.
+
+## 🏗️ Architecture Overview
+
+```
+signage/
+├── app/                        # Renderer process (React frontend)
+├── lib/                        # Core Electron processes
+├── resources/                  # Static resources and build assets
+└── Configuration files         # TypeScript, ESLint, Prettier, etc.
+```
+
+## 📁 Key Directories
+
+### `/app/` - Renderer Process
+- **[index.html](mdc:app/index.html)** - Entry HTML file for the renderer
+- **[renderer.tsx](mdc:app/renderer.tsx)** - Main renderer entry point
+- **[components/](mdc:app/components/)** - React components
+- **[styles/](mdc:app/styles/)** - CSS and TailwindCSS files
+- **[assets/](mdc:app/assets/)** - Static assets (images, fonts)
+- **[lib/](mdc:app/lib/)** - Renderer-specific utilities
+
+### `/lib/` - Electron Core
+- **[main/](mdc:lib/main/)** - Main process code (Electron main)
+- **[preload/](mdc:lib/preload/)** - Preload scripts for secure IPC
+- **[window/](mdc:lib/window/)** - Custom window and titlebar implementation
+- **[welcome/](mdc:lib/welcome/)** - Welcome screen components
+
+## 🔧 Configuration Files
+- **[package.json](mdc:package.json)** - Project dependencies and scripts
+- **[electron.vite.config.ts](mdc:electron.vite.config.ts)** - Vite build configuration for Electron
+- **[tsconfig.json](mdc:tsconfig.json)** - Main TypeScript configuration
+- **[tsconfig.web.json](mdc:tsconfig.web.json)** - Web-specific TypeScript config
+- **[tsconfig.node.json](mdc:tsconfig.node.json)** - Node.js TypeScript config
+- **[electron-builder.yml](mdc:electron-builder.yml)** - Electron packaging configuration
+
+## 🛠️ Path Aliases
+The project uses path aliases configured in [electron.vite.config.ts](mdc:electron.vite.config.ts):
+- `@/app` → `./app`
+- `@/lib` → `./lib`
+- `@/resources` → `./resources`
+
+## 🚀 Development Workflow
+- `pnpm dev` - Start development with hot reload
+- `pnpm build:mac` - Build for macOS
+- `pnpm build:win` - Build for Windows
+- `pnpm build:linux` - Build for Linux

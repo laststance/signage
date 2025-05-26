@@ -1,0 +1,194 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Troubleshooting Guide
+
+Common issues and solutions for the Electron React signage application.
+
+## 🚨 Common Development Issues
+
+### Build Failures
+
+#### Node Version Mismatch
+```bash
+# Problem: Wrong Node.js version
+# Solution: Use Volta (configured in package.json)
+volta install node@22.16.0
+```
+
+#### Dependencies Issues
+```bash
+# Problem: Corrupted node_modules
+# Solution: Clean install
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
+
+# Problem: Peer dependency conflicts
+# Solution: Check and update dependencies
+pnpm audit
+pnpm update
+```
+
+### Electron Issues
+
+#### App Won't Start
+1. **Check Main Process**: Verify [lib/main/main.ts](mdc:lib/main/main.ts) has no syntax errors
+2. **Preload Script**: Ensure [lib/preload/preload.ts](mdc:lib/preload/preload.ts) is properly built
+3. **Permissions**: Check file permissions on macOS/Linux
+
+#### IPC Communication Failing
+```typescript
+// Problem: window.api is undefined
+// Solution: Check preload script is loaded
+// In main process:
+webPreferences: {
+  preload: path.join(__dirname, '../preload/preload.js'),
+  contextIsolation: true,
+  nodeIntegration: false
+}
+```
+
+### React/Renderer Issues
+
+#### Hot Reload Not Working
+1. **Port Conflicts**: Check if port 3000 is available
+2. **File Watching**: Ensure file watcher permissions
+3. **Cache Issues**: Clear Vite cache: `rm -rf node_modules/.vite`
+
+#### Styling Issues
+```bash
+# Problem: TailwindCSS not applying
+# Solution: Check CSS imports in app/renderer.tsx
+import './styles/tailwind.css'
+
+# Problem: Dark mode not working
+# Check: Theme toggle in window controls
+# Verify: TailwindCSS dark mode configuration
+```
+
+## 🔧 Build & Packaging Issues
+
+### Electron Builder Failures
+
+#### Code Signing Issues (macOS)
+```bash
+# Problem: Code signing failed
+# Solution: Configure signing in electron-builder.yml
+# For development: Set CSC_IDENTITY_AUTO_DISCOVERY=false
+export CSC_IDENTITY_AUTO_DISCOVERY=false
+pnpm build:mac
+```
+
+#### Windows Build on macOS
+```bash
+# Problem: Windows build failing on macOS
+# Solution: Install wine for cross-platform building
+brew install wine
+```
+
+### Performance Issues
+
+#### Slow Startup
+1. **Main Process**: Minimize work in main process initialization
+2. **Preload Scripts**: Keep preload scripts lightweight
+3. **Renderer**: Use code splitting and lazy loading
+4. **Assets**: Optimize images and fonts
+
+#### Memory Leaks
+1. **Event Listeners**: Remove listeners in cleanup
+2. **IPC Channels**: Avoid creating too many IPC channels
+3. **React**: Use proper useEffect cleanup
+
+## 🐛 Debugging Strategies
+
+### Main Process Debugging
+```javascript
+// Add to main process for debugging
+console.log('Main process debugging:', process.type)
+
+// Use VS Code debugger
+// Add to launch.json:
+{
+  "type": "node",
+  "request": "launch",
+  "name": "Electron: Main",
+  "program": "${workspaceFolder}/out/main/main.js"
+}
+```
+
+### Renderer Process Debugging
+```javascript
+// Access DevTools
+// In development: Cmd+Option+I (macOS) / Ctrl+Shift+I (Windows/Linux)
+
+// Check if APIs are available
+console.log('Window API available:', !!window.api)
+```
+
+### IPC Debugging
+```javascript
+// In preload script
+contextBridge.exposeInMainWorld('api', {
+  debug: () => console.log('IPC bridge active'),
+  // ... other APIs
+})
+
+// In renderer
+window.api.debug() // Should log message
+```
+
+## 🛠️ Development Environment
+
+### VS Code Configuration
+Recommended extensions:
+- ES7+ React/Redux/React-Native snippets
+- TypeScript Importer
+- Prettier - Code formatter
+- ESLint
+- Tailwind CSS IntelliSense
+
+### Terminal/Shell Issues
+```bash
+# Problem: Command not found
+# Solution: Ensure pnpm is in PATH
+npm install -g pnpm
+
+# Problem: Permission denied (macOS/Linux)
+# Solution: Fix file permissions
+chmod +x node_modules/.bin/*
+```
+
+## 📱 Platform-Specific Issues
+
+### macOS
+- **Notarization**: Required for distribution outside App Store
+- **Gatekeeper**: May prevent unsigned apps from running
+- **File Permissions**: Check read/write permissions
+
+### Windows
+- **Windows Defender**: May flag Electron apps as suspicious
+- **Path Length**: Avoid long file paths
+- **Admin Rights**: Some features may require elevation
+
+### Linux
+- **Dependencies**: Install system dependencies for Electron
+- **AppImage**: Use for universal Linux distribution
+- **Wayland**: Test on both X11 and Wayland
+
+## 🔍 Log Analysis
+
+### Finding Logs
+```bash
+# Electron main process logs
+# Check console output in terminal
+
+# Renderer process logs
+# Open DevTools and check Console tab
+
+# System logs
+# macOS: Console.app
+# Windows: Event Viewer
+# Linux: journalctl
+```

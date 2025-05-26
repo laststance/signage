@@ -1,0 +1,134 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Development Workflow & Best Practices
+
+Guidelines for developing, building, and maintaining the Electron React signage application.
+
+## 🚀 Development Scripts
+
+### Core Development Commands
+```bash
+# Start development server with hot reload
+pnpm dev
+
+# Format code with Prettier
+pnpm format
+
+# Lint and fix code issues
+pnpm lint
+
+# Preview production build
+pnpm start
+```
+
+### Build Commands
+```bash
+# Build for macOS (current platform)
+pnpm build:mac
+
+# Build for Windows
+pnpm build:win
+
+# Build for Linux
+pnpm build:linux
+
+# Build unpacked for all platforms
+pnpm build:unpack
+```
+
+## 🛠️ Development Environment
+
+### Prerequisites
+- **Node.js**: v22.16.0 (managed by Volta - see [package.json](mdc:package.json))
+- **Package Manager**: pnpm (preferred), npm, yarn, or bun
+- **OS Support**: macOS, Windows, Linux
+
+### Hot Module Replacement
+- **Renderer**: Full HMR support through Vite
+- **Main Process**: Automatic restart on changes
+- **Preload Scripts**: Auto-reload with main process
+
+## 📝 Code Quality & Standards
+
+### TypeScript Configuration
+- **Main Config**: [tsconfig.json](mdc:tsconfig.json)
+- **Web/Renderer**: [tsconfig.web.json](mdc:tsconfig.web.json)
+- **Node/Main**: [tsconfig.node.json](mdc:tsconfig.node.json)
+
+### Linting & Formatting
+- **ESLint Config**: [.eslintrc](mdc:.eslintrc)
+- **Prettier Config**: [.prettierrc](mdc:.prettierrc)
+- **Auto-fix**: Run `pnpm lint` to fix issues automatically
+
+### Code Style Guidelines
+- Use TypeScript strict mode
+- Prefer functional components with hooks
+- Use path aliases (`@/app`, `@/lib`, `@/resources`)
+- Follow Prettier formatting rules
+- Add proper type annotations
+
+## 🏗️ Build Process
+
+### Electron Vite Configuration
+The build process is configured in [electron.vite.config.ts](mdc:electron.vite.config.ts):
+
+#### Main Process Build
+- **Entry**: `lib/main/main.ts`
+- **Output**: `out/main/main.js`
+- **Plugins**: External dependencies plugin
+
+#### Preload Build
+- **Entry**: `lib/preload/preload.ts`
+- **Output**: `out/preload/preload.js`
+- **Security**: Context isolation enabled
+
+#### Renderer Build
+- **Entry**: `app/index.html`
+- **Root**: `./app`
+- **Plugins**: React, TailwindCSS
+- **Features**: HMR, asset optimization
+
+### Electron Builder
+Packaging configuration in [electron-builder.yml](mdc:electron-builder.yml):
+- Cross-platform builds
+- Code signing (configure for production)
+- Auto-updater support
+- Distribution formats (dmg, exe, AppImage)
+
+## 🔧 Development Tips
+
+### Debugging
+- **Main Process**: Use VS Code debugger or `console.log`
+- **Renderer**: Chrome DevTools (Cmd+Option+I / Ctrl+Shift+I)
+- **Network**: Monitor IPC communication
+
+### Performance
+- **Bundle Analysis**: Use Vite's built-in analyzer
+- **Memory**: Monitor with Electron's task manager
+- **Startup**: Optimize preload scripts and main process
+
+### Testing
+- Set up Jest for unit testing
+- Use Playwright for E2E testing
+- Mock Electron APIs for renderer tests
+
+## 📦 Dependencies Management
+
+### Production Dependencies
+- **Core**: Electron toolkit utilities
+- **UI**: TailwindCSS, Lucide icons, CVA
+- **Utils**: clsx, tailwind-merge
+
+### Development Dependencies
+- **Build**: Electron Vite, Electron Builder
+- **React**: React 19, Vite React plugin
+- **Styling**: TailwindCSS v4, Framer Motion
+- **Quality**: ESLint, Prettier, TypeScript
+
+### Updates
+- Use `pnpm update` to update dependencies
+- Check for Electron security updates regularly
+- Test builds after major dependency updates

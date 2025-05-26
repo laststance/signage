@@ -148,10 +148,10 @@ export const menuItems: TitlebarMenu[] = [
     name: 'Credits',
     items: [
       {
-        name: 'Guasam',
+        name: 'Laststance.io',
         action: 'web-open-url',
-        actionParams: ['https://github.com/guasam'],
-        shortcut: '@guasam',
+        actionParams: ['https://laststance.io'],
+        shortcut: '@laststance.io',
       },
     ],
   },

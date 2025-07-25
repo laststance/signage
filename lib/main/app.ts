@@ -8,7 +8,7 @@ export function createAppWindow(): void {
     width: 900,
     height: 670,
     show: false,
-    backgroundColor: '#1c1c1c',
+    backgroundColor: '#000000',
     icon: appIcon,
     frame: false,
     titleBarStyle: 'hiddenInset',

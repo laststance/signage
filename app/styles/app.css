@@ -5,6 +5,7 @@ body {
   font-size: 14px;
   margin: 0;
   overflow: hidden;
+  background-color: #000000;
 }
 
 html,
@@ -13,4 +14,5 @@ body,
   height: 100%;
   margin: 0;
   line-height: 1.4;
+  background-color: #000000;
 }

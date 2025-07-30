@@ -1,7 +1,7 @@
 ---
-description:
+description: alwaysApply: Electron Architecture & IPC
 globs:
-alwaysApply: false
+alwaysApply: true
 ---
 # Electron Architecture & IPC
 

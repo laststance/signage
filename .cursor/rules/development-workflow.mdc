@@ -1,7 +1,7 @@
 ---
-description:
+description: alwaysApply: Development Workflow & Best Practices
 globs:
-alwaysApply: false
+alwaysApply: true
 ---
 # Development Workflow & Best Practices
 

@@ -13,21 +13,41 @@ asarUnpack:
   - resources/**
 win:
   executableName: Signage
+  icon: resources/build/icon.png
+  # Windows code signing configuration
+  # Set CSC_LINK and CSC_KEY_PASSWORD environment variables for code signing
+  # For example:
+  # CSC_LINK: path/to/certificate.p12
+  # CSC_KEY_PASSWORD: your_certificate_password
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
 mac:
+  target:
+    - target: default
+      arch:
+        - x64
+        - arm64
   entitlementsInherit: resources/build/entitlements.mac.plist
   extendInfo:
     - NSCameraUsageDescription: Application requests access to the device's camera.
     - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
     - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
-  notarize: false
+  # macOS code signing and notarization
+  # Set CSC_LINK and CSC_KEY_PASSWORD environment variables for certificates
+  # For notarization, set one of these environment variable sets:
+  # 1. APPLE_API_KEY, APPLE_API_KEY_ID and APPLE_API_ISSUER
+  # 2. APPLE_ID, APPLE_APP_SPECIFIC_PASSWORD, and APPLE_TEAM_ID  
+  # 3. APPLE_KEYCHAIN and APPLE_KEYCHAIN_PROFILE
+  identity: # Will be auto-detected or set via CSC_NAME
+  notarize: false # Set to true when you have proper credentials
+  hardenedRuntime: true # Required for notarization
+  gatekeeperAssess: false # Disable gatekeeper assessment for development
 dmg:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: ${name}-${version}-${arch}.${ext}
 linux:
   target:
     - AppImage

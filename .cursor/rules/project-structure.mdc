@@ -1,7 +1,7 @@
 ---
-description:
+description: alwaysApply: Project Structure Guide
 globs:
-alwaysApply: false
+alwaysApply: true
 ---
 # Project Structure Guide
 

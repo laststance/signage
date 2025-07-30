@@ -1,7 +1,7 @@
 ---
-description:
+description: React Components & UI
 globs:
-alwaysApply: false
+alwaysApply: true
 ---
 # React Components & UI
 

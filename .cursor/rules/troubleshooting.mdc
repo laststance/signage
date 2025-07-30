@@ -1,7 +1,7 @@
 ---
-description:
+description: alwaysApply: Troubleshooting Guide
 globs:
-alwaysApply: false
+alwaysApply: true
 ---
 # Troubleshooting Guide
 

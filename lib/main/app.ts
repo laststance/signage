@@ -26,6 +26,7 @@ export function createAppWindow(): void {
   registerWindowIPC(mainWindow)
 
   mainWindow.on('ready-to-show', () => {
+    mainWindow.maximize()
     mainWindow.show()
   })
 

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 export default function SplashCursor({
   // Add whatever props you like for customization
@@ -19,6 +19,92 @@ export default function SplashCursor({
   TRANSPARENT = true,
 }) {
   const canvasRef = useRef(null);
+  const [isAutoMode, setIsAutoMode] = useState(false);
+  const isAutoModeRef = useRef(false);
+  const autoModeIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+
+  // Store references to functions and state that need to be accessed from auto mode
+  const autoModeRef = useRef({
+    updatePointerMoveData: null as any,
+    updatePointerDownData: null as any,
+    clickSplat: null as any,
+    generateColor: null as any,
+    pointers: null as any
+  });
+
+  // Auto mode movement generator
+  const generateRandomMovement = useCallback(() => {
+    if (!canvasRef.current || !autoModeRef.current.pointers) return;
+    
+    const canvas = canvasRef.current;
+    const pointer = autoModeRef.current.pointers[0];
+    
+    // Generate random position within canvas bounds
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * canvas.height;
+    
+    // Update pointer with new position and random color
+    autoModeRef.current.updatePointerMoveData(pointer, x, y, autoModeRef.current.generateColor());
+    
+    // Occasionally add a click splat for more variety
+    if (Math.random() < 0.1) {
+      autoModeRef.current.updatePointerDownData(pointer, -1, x, y);
+      autoModeRef.current.clickSplat(pointer);
+    }
+  }, []);
+
+  // Handle auto mode state changes
+  useEffect(() => {
+    const handleModeChange = (isAuto: boolean) => {
+      setIsAutoMode(isAuto);
+      isAutoModeRef.current = isAuto;
+    };
+
+    // Listen for mode changes from main process
+    if (window.api) {
+      window.api.receive('visual-mode-changed', handleModeChange);
+      
+      // Get initial state
+      window.api.invoke('visual-mode-get-state').then((initialState: boolean) => {
+        setIsAutoMode(initialState);
+        isAutoModeRef.current = initialState;
+      });
+    }
+
+    return () => {
+      if (window.api) {
+        window.api.removeAllListeners('visual-mode-changed');
+      }
+    };
+  }, []);
+
+  // Handle auto mode interval
+  useEffect(() => {
+    if (isAutoMode) {
+      // Start auto mode with random movements every 100-500ms
+      const startAutoMode = () => {
+        const randomInterval = 100 + Math.random() * 400;
+        autoModeIntervalRef.current = setTimeout(() => {
+          generateRandomMovement();
+          startAutoMode(); // Schedule next movement
+        }, randomInterval);
+      };
+      startAutoMode();
+    } else {
+      // Clear auto mode interval
+      if (autoModeIntervalRef.current) {
+        clearTimeout(autoModeIntervalRef.current);
+        autoModeIntervalRef.current = null;
+      }
+    }
+
+    return () => {
+      if (autoModeIntervalRef.current) {
+        clearTimeout(autoModeIntervalRef.current);
+      }
+    };
+  }, [isAutoMode, generateRandomMovement]);
 
   useEffect(() => {
     const canvas: HTMLCanvasElement | null = canvasRef.current;
@@ -1165,17 +1251,21 @@ export default function SplashCursor({
       return hash;
     }
 
-    window.addEventListener("mousedown", (e) => {
+    const handleMouseDown = (e) => {
+      if (isAutoModeRef.current) return; // Skip mouse events in auto mode
       let pointer = pointers[0];
       let posX = scaleByPixelRatio(e.clientX);
       let posY = scaleByPixelRatio(e.clientY);
       updatePointerDownData(pointer, -1, posX, posY);
       clickSplat(pointer);
-    });
+    };
+    
+    window.addEventListener("mousedown", handleMouseDown);
 
     document.body.addEventListener(
       "mousemove",
       function handleFirstMouseMove(e) {
+        if (isAutoModeRef.current) return; // Skip mouse events in auto mode
         let pointer = pointers[0];
         let posX = scaleByPixelRatio(e.clientX);
         let posY = scaleByPixelRatio(e.clientY);
@@ -1186,17 +1276,21 @@ export default function SplashCursor({
       }
     );
 
-    window.addEventListener("mousemove", (e) => {
+    const handleMouseMove = (e) => {
+      if (isAutoModeRef.current) return; // Skip mouse events in auto mode
       let pointer = pointers[0];
       let posX = scaleByPixelRatio(e.clientX);
       let posY = scaleByPixelRatio(e.clientY);
       let color = pointer.color;
       updatePointerMoveData(pointer, posX, posY, color);
-    });
+    };
+    
+    window.addEventListener("mousemove", handleMouseMove);
 
     document.body.addEventListener(
       "touchstart",
       function handleFirstTouchStart(e) {
+        if (isAutoModeRef.current) return; // Skip touch events in auto mode
         const touches = e.targetTouches;
         let pointer = pointers[0];
         for (let i = 0; i < touches.length; i++) {
@@ -1209,7 +1303,8 @@ export default function SplashCursor({
       }
     );
 
-    window.addEventListener("touchstart", (e) => {
+    const handleTouchStart = (e) => {
+      if (isAutoModeRef.current) return; // Skip touch events in auto mode
       const touches = e.targetTouches;
       let pointer = pointers[0];
       for (let i = 0; i < touches.length; i++) {
@@ -1217,31 +1312,54 @@ export default function SplashCursor({
         let posY = scaleByPixelRatio(touches[i].clientY);
         updatePointerDownData(pointer, touches[i].identifier, posX, posY);
       }
-    });
+    };
+    
+    window.addEventListener("touchstart", handleTouchStart);
 
-    window.addEventListener(
-      "touchmove",
-      (e) => {
-        const touches = e.targetTouches;
-        let pointer = pointers[0];
-        for (let i = 0; i < touches.length; i++) {
-          let posX = scaleByPixelRatio(touches[i].clientX);
-          let posY = scaleByPixelRatio(touches[i].clientY);
-          updatePointerMoveData(pointer, posX, posY, pointer.color);
-        }
-      },
-      false
-    );
+    const handleTouchMove = (e) => {
+      if (isAutoModeRef.current) return; // Skip touch events in auto mode
+      const touches = e.targetTouches;
+      let pointer = pointers[0];
+      for (let i = 0; i < touches.length; i++) {
+        let posX = scaleByPixelRatio(touches[i].clientX);
+        let posY = scaleByPixelRatio(touches[i].clientY);
+        updatePointerMoveData(pointer, posX, posY, pointer.color);
+      }
+    };
+    
+    window.addEventListener("touchmove", handleTouchMove, false);
 
-    window.addEventListener("touchend", (e) => {
+    const handleTouchEnd = (e) => {
+      if (isAutoModeRef.current) return; // Skip touch events in auto mode
       const touches = e.changedTouches;
       let pointer = pointers[0];
       for (let i = 0; i < touches.length; i++) {
         updatePointerUpData(pointer);
       }
-    });
+    };
+    
+    window.addEventListener("touchend", handleTouchEnd);
+
+    // Store function references for auto mode
+    autoModeRef.current = {
+      updatePointerMoveData,
+      updatePointerDownData,
+      clickSplat,
+      generateColor,
+      pointers
+    };
 
     updateFrame();
+    
+    // Cleanup on unmount
+    return () => {
+      if (autoModeIntervalRef.current) {
+        clearTimeout(autoModeIntervalRef.current);
+      }
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     SIM_RESOLUTION,

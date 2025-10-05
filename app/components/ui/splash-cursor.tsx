@@ -18,7 +18,7 @@ export default function SplashCursor({
   BACK_COLOR = { r: 0, g: 0, b: 0 },
   TRANSPARENT = true,
 }) {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isAutoMode, setIsAutoMode] = useState(false);
   const isAutoModeRef = useRef(false);
   const autoModeIntervalRef = useRef<NodeJS.Timeout | null>(null);

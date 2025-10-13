@@ -43,13 +43,21 @@ export function createApplicationMenu(): Menu {
             label: 'Signage',
             submenu: [
               {
+                label: 'About Signage',
+                click: async () => {
+                  const { shell } = await import('electron')
+                  await shell.openExternal('https://laststance.io')
+                }
+              },
+              { type: 'separator' as const },
+              {
                 label: 'Default Mode',
                 type: 'radio' as const,
                 checked: !isAutoMode,
                 click: () => setVisualMode(false)
               },
               {
-                label: 'Auto Mode', 
+                label: 'Auto Mode',
                 type: 'radio' as const,
                 checked: isAutoMode,
                 click: () => setVisualMode(true)

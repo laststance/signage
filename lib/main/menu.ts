@@ -13,6 +13,8 @@ export function createApplicationMenu(): Menu {
           {
             label: app.getName(),
             submenu: [
+              { role: 'about' as const },
+              { type: 'separator' as const },
               {
                 label: 'Default Mode',
                 type: 'radio' as const,
@@ -25,8 +27,6 @@ export function createApplicationMenu(): Menu {
                 checked: isAutoMode,
                 click: () => setVisualMode(true)
               },
-              { type: 'separator' as const },
-              { role: 'about' as const },
               { type: 'separator' as const },
               { role: 'services' as const },
               { type: 'separator' as const },

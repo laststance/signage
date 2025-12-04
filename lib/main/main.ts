@@ -1,5 +1,6 @@
-import { app, BrowserWindow, Menu } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
+import { app, BrowserWindow, Menu } from 'electron'
+
 import { createAppWindow } from './app'
 import { createApplicationMenu } from './menu'
 

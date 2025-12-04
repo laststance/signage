@@ -1,4 +1,5 @@
-import { app, Menu, BrowserWindow, MenuItemConstructorOptions } from 'electron'
+import type { MenuItemConstructorOptions } from 'electron'
+import { app, Menu, BrowserWindow } from 'electron'
 
 // Visual mode state
 let isAutoMode = false
@@ -15,13 +16,13 @@ export function createApplicationMenu(): Menu {
           label: 'Default Mode',
           type: 'radio' as const,
           checked: !isAutoMode,
-          click: () => setVisualMode(false)
+          click: () => setVisualMode(false),
         },
         {
           label: 'Auto Mode',
           type: 'radio' as const,
           checked: isAutoMode,
-          click: () => setVisualMode(true)
+          click: () => setVisualMode(true),
         },
         { type: 'separator' as const },
         { role: 'services' as const },
@@ -30,15 +31,13 @@ export function createApplicationMenu(): Menu {
         { role: 'hideOthers' as const },
         { role: 'unhide' as const },
         { type: 'separator' as const },
-        { role: 'quit' as const }
-      ]
+        { role: 'quit' as const },
+      ],
     },
     // File menu
     {
       label: 'File',
-      submenu: [
-        { role: 'close' as const }
-      ]
+      submenu: [{ role: 'close' as const }],
     },
     // Edit menu
     {
@@ -58,10 +57,10 @@ export function createApplicationMenu(): Menu {
           label: 'Speech',
           submenu: [
             { role: 'startSpeaking' as const },
-            { role: 'stopSpeaking' as const }
-          ]
-        }
-      ]
+            { role: 'stopSpeaking' as const },
+          ],
+        },
+      ],
     },
     // View menu
     {
@@ -75,8 +74,8 @@ export function createApplicationMenu(): Menu {
         { role: 'zoomIn' as const },
         { role: 'zoomOut' as const },
         { type: 'separator' as const },
-        { role: 'togglefullscreen' as const }
-      ]
+        { role: 'togglefullscreen' as const },
+      ],
     },
     // Window menu
     {
@@ -87,8 +86,8 @@ export function createApplicationMenu(): Menu {
         { type: 'separator' as const },
         { role: 'front' as const },
         { type: 'separator' as const },
-        { role: 'window' as const }
-      ]
+        { role: 'window' as const },
+      ],
     },
     {
       role: 'help' as const,
@@ -98,10 +97,10 @@ export function createApplicationMenu(): Menu {
           click: async () => {
             const { shell } = await import('electron')
             await shell.openExternal('https://laststance.io')
-          }
-        }
-      ]
-    }
+          },
+        },
+      ],
+    },
   ]
 
   return Menu.buildFromTemplate(template)
@@ -109,11 +108,11 @@ export function createApplicationMenu(): Menu {
 
 function setVisualMode(autoMode: boolean): void {
   isAutoMode = autoMode
-  
+
   // Update menu
   const menu = createApplicationMenu()
   Menu.setApplicationMenu(menu)
-  
+
   // Notify renderer process
   const mainWindow = BrowserWindow.getFocusedWindow()
   if (mainWindow) {

@@ -1,4 +1,5 @@
-import { ElectronAPI } from '@electron-toolkit/preload'
+import type { ElectronAPI } from '@electron-toolkit/preload'
+
 import type api from './api'
 
 declare global {

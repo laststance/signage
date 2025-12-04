@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { Titlebar } from './Titlebar'
+
 import type { TitlebarMenu } from '../titlebarMenus'
+
+import { Titlebar } from './Titlebar'
 import { TitlebarContextProvider } from './TitlebarContext'
 
 interface WindowContextProps {
@@ -30,7 +32,10 @@ export interface TitlebarProps {
 
 const WindowContext = createContext<WindowContextProps | undefined>(undefined)
 
-export const WindowContextProvider = ({ children, titlebar }: WindowContextProviderProps) => {
+export const WindowContextProvider = ({
+  children,
+  titlebar,
+}: WindowContextProviderProps) => {
   const [initProps, setInitProps] = useState<WindowInitProps | undefined>()
 
   const defaultTitlebar: TitlebarProps = {
@@ -45,7 +50,9 @@ export const WindowContextProvider = ({ children, titlebar }: WindowContextProvi
 
   useEffect(() => {
     // Load window init props
-    window.api.invoke('init-window').then((value: WindowInitProps) => setInitProps(value))
+    window.api
+      .invoke('init-window')
+      .then((value: WindowInitProps) => setInitProps(value))
 
     // Add class to parent element
     const parent = document.querySelector('.window-content')?.parentElement
@@ -71,7 +78,9 @@ const WindowContent = ({ children }: { children: React.ReactNode }) => {
 export const useWindowContext = () => {
   const context = useContext(WindowContext)
   if (context === undefined) {
-    throw new Error('useWindowContext must be used within a WindowContextProvider')
+    throw new Error(
+      'useWindowContext must be used within a WindowContextProvider',
+    )
   }
   return context
 }

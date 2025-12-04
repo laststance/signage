@@ -1,5 +1,7 @@
-import { BrowserWindow, shell, app } from 'electron'
 import { join } from 'path'
+
+import { BrowserWindow, shell, app } from 'electron'
+
 import { registerWindowIPC } from '@/lib/window/ipcEvents'
 import appIcon from '@/resources/build/icon.png?asset'
 

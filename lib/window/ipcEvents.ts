@@ -1,5 +1,7 @@
-import { type BrowserWindow, ipcMain, shell } from 'electron'
 import os from 'os'
+
+import { type BrowserWindow, ipcMain, shell } from 'electron'
+
 import { getVisualModeState } from '../main/menu'
 
 const handleIPC = (channel: string, handler: (...args: any[]) => void) => {
@@ -45,15 +47,19 @@ export const registerWindowIPC = (mainWindow: BrowserWindow) => {
   handleIPC('web-force-reload', () => webContents.reloadIgnoringCache())
   handleIPC('web-toggle-devtools', () => webContents.toggleDevTools())
   handleIPC('web-actual-size', () => webContents.setZoomLevel(0))
-  handleIPC('web-zoom-in', () => webContents.setZoomLevel(webContents.zoomLevel + 0.5))
-  handleIPC('web-zoom-out', () => webContents.setZoomLevel(webContents.zoomLevel - 0.5))
+  handleIPC('web-zoom-in', () =>
+    webContents.setZoomLevel(webContents.zoomLevel + 0.5),
+  )
+  handleIPC('web-zoom-out', () =>
+    webContents.setZoomLevel(webContents.zoomLevel - 0.5),
+  )
   handleIPC('web-toggle-fullscreen', () => {
     const newState = !mainWindow.fullScreen
     mainWindow.setFullScreen(newState)
     return newState
   })
   handleIPC('web-get-fullscreen-status', () => mainWindow.fullScreen)
-  handleIPC('web-open-url', (_e, url) => shell.openExternal(url))
+  handleIPC('web-open-url', async (_e, url) => shell.openExternal(url))
 
   // Visual mode IPC handlers (now handled by menu)
   handleIPC('visual-mode-get-state', () => getVisualModeState())

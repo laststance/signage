@@ -7,7 +7,7 @@ const api = {
   receive: (channel: string, func: (...args: any[]) => void) => {
     ipcRenderer.on(channel, (_, ...args) => func(...args))
   },
-  invoke: (channel: string, ...args: any[]) => {
+  invoke: async (channel: string, ...args: any[]) => {
     return ipcRenderer.invoke(channel, ...args)
   },
   removeAllListeners: (channel: string) => {

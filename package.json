@@ -3,6 +3,7 @@
   "version": "1.1.1",
   "description": "Self Screen Saver App",
   "main": "./out/main/main.js",
+  "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -19,14 +20,17 @@
   "scripts": {
     "dev": "electron-vite dev -w",
     "format": "prettier --write .",
-    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "start": "electron-vite preview",
     "typecheck": "tsc --noEmit",
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "electron-vite build && electron-builder --dir",
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:mac:intel": "electron-vite build && electron-builder --mac --x64",
-    "build:mac:apple": "electron-vite build && electron-builder --mac --arm64"
+    "build:mac:apple": "electron-vite build && electron-builder --mac --arm64",
+    "prepare": "husky",
+    "prettier": "prettier --ignore-unknown --write ."
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
@@ -37,10 +41,7 @@
     "tailwind-merge": "^3.3.0"
   },
   "devDependencies": {
-    "@electron-toolkit/eslint-config": "^2.1.0",
-    "@electron-toolkit/eslint-config-ts": "^3.1.0",
     "@electron-toolkit/tsconfig": "^1.0.1",
-    "@rushstack/eslint-patch": "^1.11.0",
     "@tailwindcss/vite": "^4.1.4",
     "@types/node": "^22.14.1",
     "@types/react": "^19.1.2",
@@ -50,8 +51,10 @@
     "electron-builder": "^26.0.12",
     "electron-vite": "^3.1.0",
     "eslint": "^9.25.1",
-    "eslint-plugin-react": "^7.37.5",
+    "eslint-config-ts-prefixer": "^4.1.0",
     "framer-motion": "^12.7.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.5.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -62,5 +65,8 @@
   },
   "volta": {
     "node": "22.16.0"
+  },
+  "lint-staged": {
+    "*": "prettier --ignore-unknown --write"
   }
 }

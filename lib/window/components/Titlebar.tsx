@@ -1,11 +1,14 @@
-import { useEffect, useRef, useState } from 'react'
-import { useWindowContext } from './WindowContext'
-import { useTitlebarContext } from './TitlebarContext'
+import { useEffect, useRef } from 'react'
+
 import type { TitlebarMenu, TitlebarMenuItem } from '../titlebarMenus'
 
+import { useTitlebarContext } from './TitlebarContext'
+import { useWindowContext } from './WindowContext'
+
 export const Titlebar = () => {
-  const { title, icon, titleCentered, menuItems } = useWindowContext().titlebar
-  const { menusVisible, setMenusVisible, closeActiveMenu } = useTitlebarContext()
+  const { title, titleCentered, menuItems } = useWindowContext().titlebar
+  const { menusVisible, setMenusVisible, closeActiveMenu } =
+    useTitlebarContext()
   const wcontext = useWindowContext().window
 
   useEffect(() => {
@@ -28,7 +31,9 @@ export const Titlebar = () => {
   }, [menusVisible])
 
   return (
-    <div className={`window-titlebar ${wcontext?.platform ? `platform-${wcontext.platform}` : ''}`}>
+    <div
+      className={`window-titlebar ${wcontext?.platform ? `platform-${wcontext.platform}` : ''}`}
+    >
       <div
         className="window-titlebar-title"
         {...(titleCentered && { 'data-centered': true })}
@@ -49,12 +54,20 @@ const TitlebarMenu = () => {
 
   return (
     <div className="window-titlebar-menu">
-      {menuItems?.map((menu, index) => <TitlebarMenuItem key={index} menu={menu} index={index} />)}
+      {menuItems?.map((menu, index) => (
+        <TitlebarMenuItem key={index} menu={menu} index={index} />
+      ))}
     </div>
   )
 }
 
-const TitlebarMenuItem = ({ menu, index }: { menu: TitlebarMenu; index: number }) => {
+const TitlebarMenuItem = ({
+  menu,
+  index,
+}: {
+  menu: TitlebarMenu
+  index: number
+}) => {
   const { activeMenuIndex, setActiveMenuIndex } = useTitlebarContext()
   const menuItemRef = useRef<HTMLDivElement | null>(null)
 
@@ -142,7 +155,10 @@ const TitlebarMenuPopupItem = ({ item }: { item: TitlebarMenuItem }) => {
     }
 
     // Invoke the action with the provided parameters
-    window.api.invoke(item.action!, ...(item.actionParams ? item.actionParams : []))
+    window.api.invoke(
+      item.action!,
+      ...(item.actionParams ? item.actionParams : []),
+    )
     setActiveMenuIndex(null)
   }
 
@@ -153,95 +169,9 @@ const TitlebarMenuPopupItem = ({ item }: { item: TitlebarMenuItem }) => {
   return (
     <div className="menuItem-popupItem" onClick={handleAction}>
       <div>{item.name}</div>
-      {item.shortcut && <div className="menuItem-shortcut">{item.shortcut}</div>}
-    </div>
-  )
-}
-
-const TitlebarControls = () => {
-  const [isFullscreen, setIsFullscreen] = useState(false)
-  const closePath =
-    'M 0,0 0,0.7 4.3,5 0,9.3 0,10 0.7,10 5,5.7 9.3,10 10,10 10,9.3 5.7,5 10,0.7 10,0 9.3,0 5,4.3 0.7,0 Z'
-  const maximizePath = 'M 0,0 0,10 10,10 10,0 Z M 1,1 9,1 9,9 1,9 Z'
-  const minimizePath = 'M 0,5 10,5 10,6 0,6 Z'
-  const fullscreenEnterPath = 'M 0,0 0,3 1,3 1,1 3,1 3,0 Z M 7,0 7,1 9,1 9,3 10,3 10,0 Z M 10,7 9,7 9,9 7,9 7,10 10,10 Z M 3,10 3,9 1,9 1,7 0,7 0,10 Z'
-  const fullscreenExitPath = 'M 1,1 1,0 4,0 4,1 2,1 2,4 1,4 Z M 6,0 9,0 9,1 8,1 8,4 9,4 9,6 6,6 6,5 8,5 8,1 6,1 Z M 9,6 9,9 8,9 8,8 6,8 6,9 4,9 4,6 5,6 5,8 8,8 8,6 Z M 4,6 4,4 5,4 5,5 8,5 8,4 8,1 6,1 6,0 4,0 4,1 2,1 2,4 1,4 1,6 Z'
-  const wcontext = useWindowContext().window
-
-  // Get initial fullscreen status
-  useEffect(() => {
-    window.api.invoke('web-get-fullscreen-status').then((status: boolean) => {
-      setIsFullscreen(status)
-    })
-  }, [])
-
-  // Handle fullscreen state changes from other sources (F11, menu)
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      window.api.invoke('web-get-fullscreen-status').then((status: boolean) => {
-        setIsFullscreen(status)
-      })
-    }
-
-    // Listen for fullscreen changes
-    document.addEventListener('fullscreenchange', handleFullscreenChange)
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange)
-    }
-  }, [])
-
-  return (
-    <div className="window-titlebar-controls">
-      {wcontext?.minimizable && <TitlebarControlButton label="minimize" svgPath={minimizePath} />}
-      {wcontext?.maximizable && <TitlebarControlButton label="maximize" svgPath={maximizePath} />}
-      <TitlebarControlButton 
-        label="fullscreen" 
-        svgPath={isFullscreen ? fullscreenExitPath : fullscreenEnterPath}
-        onFullscreenChange={setIsFullscreen}
-      />
-      <TitlebarControlButton label="close" svgPath={closePath} />
-    </div>
-  )
-}
-
-const TitlebarControlButton = ({ 
-  svgPath, 
-  label, 
-  onFullscreenChange 
-}: { 
-  svgPath: string; 
-  label: string; 
-  onFullscreenChange?: (value: boolean) => void; 
-}) => {
-  const handleAction = async () => {
-    switch (label) {
-      case 'minimize':
-        window.api.invoke('window-minimize')
-        break
-      case 'maximize':
-        window.api.invoke('window-maximize-toggle')
-        break
-      case 'fullscreen':
-        try {
-          const newState = await window.api.invoke('web-toggle-fullscreen')
-          onFullscreenChange?.(newState)
-        } catch (error) {
-          console.error('Failed to toggle fullscreen:', error)
-        }
-        break
-      case 'close':
-        window.api.invoke('window-close')
-        break
-      default:
-        console.warn(`Unhandled action for label: ${label}`)
-    }
-  }
-
-  return (
-    <div aria-label={label} className="titlebar-controlButton" onClick={handleAction}>
-      <svg width="10" height="10">
-        <path fill="currentColor" d={svgPath} />
-      </svg>
+      {item.shortcut && (
+        <div className="menuItem-shortcut">{item.shortcut}</div>
+      )}
     </div>
   )
 }

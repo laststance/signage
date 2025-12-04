@@ -66,7 +66,7 @@ export default function Home() {
                 </p>
                 
                 <p className="text-lg sm:text-xl text-gray-500 mb-12 max-w-2xl mx-auto">
-                  Transform idle screen time into mindful moments • Available for macOS and Windows
+                  Transform idle screen time into mindful moments • Available for macOS
                 </p>
 
                 {/* Download Buttons */}
@@ -99,22 +99,6 @@ export default function Home() {
                           </div>
                         </span>
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-300 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                      </a>
-                    </div>
-                  </div>
-
-                  {/* Windows Download */}
-                  <div className="space-y-4">
-                    <h3 className="text-xl font-semibold text-gray-300 text-center">Download for Windows</h3>
-                    <div className="flex justify-center">
-                      <a href="https://github.com/laststance/signage/releases/download/v1.1.1/signage-1.1.1-setup.exe" className="group relative overflow-hidden bg-gray-800 text-white px-8 py-4 rounded-full text-lg font-medium border border-gray-600 transition-all duration-300 hover:bg-gray-700 hover:scale-105 w-full sm:w-auto inline-block">
-                        <span className="relative z-10 flex items-center justify-center gap-3">
-                          <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3 12V6.75l6-1.32v6.48L3 12zm17-9v18l-6-1.5V3l6 1.5zM11 12V6.75l6-1.32v6.48L11 12zm0 7.25V13.5l6 1.32v5.25L11 19.25z"/>
-                          </svg>
-                          Windows Installer
-                        </span>
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-gray-600 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                       </a>
                     </div>
                   </div>

@@ -5,10 +5,9 @@ import { createApplicationMenu } from './menu'
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  // Set app user model id for windows
-  electronApp.setAppUserModelId('com.electron')
+  // Set app user model id
+  electronApp.setAppUserModelId('com.laststance.signage')
 
   // Create and set application menu
   const menu = createApplicationMenu()
@@ -19,7 +18,6 @@ app.whenReady().then(() => {
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
-  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
@@ -33,14 +31,10 @@ app.whenReady().then(() => {
   })
 })
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
+// On macOS, apps typically stay active until the user explicitly quits with Cmd+Q.
+// The window-all-closed handler is intentionally empty to preserve this behavior.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  // macOS: Do nothing - app stays in dock
 })
-
 // In this file, you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.

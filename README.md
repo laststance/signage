@@ -5,7 +5,7 @@
     <img src="resources/build/icon.svg" width="64" />
 </p>
 
-A modern Electron application template with React, Vite, TypeScript, and TailwindCSS. This project provides a solid foundation for developing cross-platform desktop applications.
+A modern Electron application template with React, Vite, TypeScript, and TailwindCSS. This project provides a solid foundation for developing macOS desktop applications.
 
 <br />
 
@@ -21,7 +21,7 @@ A modern Electron application template with React, Vite, TypeScript, and Tailwin
 
 ## Features
 
-- 🚀 Electron - Cross-platform desktop application framework
+- 🚀 Electron - Desktop application framework for macOS
 - ⚛️ React - Component-based UI library
 - 📦 TypeScript - Type-safe JavaScript
 - 🎨 TailwindCSS - Utility-first CSS framework
@@ -83,19 +83,19 @@ This will start Electron with hot-reload enabled so you can see changes in real 
 
 ## Building for Production
 
-Build the application for your platform:
+Build the application for macOS:
 
 ```bash
-# For Windows
-npm run build:win
-
-# For macOS
+# For macOS (Universal - x64 and arm64)
 npm run build:mac
 
-# For Linux
-npm run build:linux
+# For macOS (Intel only)
+npm run build:mac:intel
 
-# Unpacked for all platforms
+# For macOS (Apple Silicon only)
+npm run build:mac:apple
+
+# Unpacked build
 npm run build:unpack
 ```
 
@@ -130,7 +130,7 @@ This template includes a custom window implementation with:
 - Window control buttons (minimize, maximize, close)
 - Menu system with keyboard shortcuts
 - Dark/light mode toggle
-- Cross-platform support for Windows and macOS
+- Native macOS window styling with hidden inset titlebar
 
 <br />
 
@@ -138,7 +138,6 @@ This template includes a custom window implementation with:
 
 The titlebar menu can be toggled using:
 
-- **Windows**: Press the `Alt` key
 - **macOS**: Press the `Option (⌥)` key
 
 When you press the toggle key:

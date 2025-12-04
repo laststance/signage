@@ -13,7 +13,6 @@
     "onlyBuiltDependencies": [
       "@tailwindcss/oxide",
       "electron",
-      "electron-winstaller",
       "esbuild"
     ]
   },
@@ -25,11 +24,9 @@
     "typecheck": "tsc --noEmit",
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "electron-vite build && electron-builder --dir",
-    "build:win": "electron-vite build && electron-builder --win",
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:mac:intel": "electron-vite build && electron-builder --mac --x64",
-    "build:mac:apple": "electron-vite build && electron-builder --mac --arm64",
-    "build:linux": "electron-vite build && electron-builder --linux"
+    "build:mac:apple": "electron-vite build && electron-builder --mac --arm64"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",

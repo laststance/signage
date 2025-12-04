@@ -36,7 +36,7 @@ pnpm update
 #### App Won't Start
 1. **Check Main Process**: Verify [lib/main/main.ts](mdc:lib/main/main.ts) has no syntax errors
 2. **Preload Script**: Ensure [lib/preload/preload.ts](mdc:lib/preload/preload.ts) is properly built
-3. **Permissions**: Check file permissions on macOS/Linux
+3. **Permissions**: Check file permissions on macOS
 
 #### IPC Communication Failing
 ```typescript
@@ -121,7 +121,7 @@ console.log('Main process debugging:', process.type)
 ### Renderer Process Debugging
 ```javascript
 // Access DevTools
-// In development: Cmd+Option+I (macOS) / Ctrl+Shift+I (Windows/Linux)
+// In development: Cmd+Option+I (macOS)
 
 // Check if APIs are available
 console.log('Window API available:', !!window.api)
@@ -166,16 +166,7 @@ chmod +x node_modules/.bin/*
 - **Notarization**: Required for distribution outside App Store
 - **Gatekeeper**: May prevent unsigned apps from running
 - **File Permissions**: Check read/write permissions
-
-### Windows
-- **Windows Defender**: May flag Electron apps as suspicious
-- **Path Length**: Avoid long file paths
-- **Admin Rights**: Some features may require elevation
-
-### Linux
-- **Dependencies**: Install system dependencies for Electron
-- **AppImage**: Use for universal Linux distribution
-- **Wayland**: Test on both X11 and Wayland
+- **Code Signing**: Configure CSC_LINK and CSC_KEY_PASSWORD for production
 
 ## 🔍 Log Analysis
 
@@ -189,6 +180,4 @@ chmod +x node_modules/.bin/*
 
 # System logs
 # macOS: Console.app
-# Windows: Event Viewer
-# Linux: journalctl
 ```

@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Signage - Digital Serenity Screen Saver",
-  description: "Transform your screen into a serene digital sanctuary. Cool down your brain with our beautiful, minimalist screen saver app for macOS and Windows.",
+  description: "Transform your screen into a serene digital sanctuary. Cool down your brain with our beautiful, minimalist screen saver app for macOS.",
 };
 
 export default function RootLayout({

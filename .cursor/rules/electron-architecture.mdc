@@ -54,16 +54,14 @@ The application features a custom window system located in [lib/window/](mdc:lib
 
 ### Key Features
 - Custom titlebar with app branding
-- Cross-platform window controls (minimize, maximize, close)
+- Native macOS window controls
 - Built-in menu system with keyboard shortcuts
 - Dark/light mode toggle
-- Menu visibility toggle (Alt/Option key)
+- Menu visibility toggle (Option key)
 
 ### Menu Configuration
 - **Menu Items**: Defined in [lib/window/titlebarMenus.ts](mdc:lib/window/titlebarMenus.ts)
-- **Toggle Keys**: 
-  - Windows: `Alt` key
-  - macOS: `Option (⌥)` key
+- **Toggle Key**: macOS: `Option (⌥)` key
 
 ## 🔒 Security Considerations
 

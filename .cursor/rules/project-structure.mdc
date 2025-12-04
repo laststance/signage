@@ -49,6 +49,6 @@ The project uses path aliases configured in [electron.vite.config.ts](mdc:electr
 
 ## 🚀 Development Workflow
 - `pnpm dev` - Start development with hot reload
-- `pnpm build:mac` - Build for macOS
-- `pnpm build:win` - Build for Windows
-- `pnpm build:linux` - Build for Linux
+- `pnpm build:mac` - Build for macOS (Universal)
+- `pnpm build:mac:intel` - Build for macOS Intel
+- `pnpm build:mac:apple` - Build for macOS Apple Silicon

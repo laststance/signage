@@ -26,16 +26,16 @@ pnpm start
 
 ### Build Commands
 ```bash
-# Build for macOS (current platform)
+# Build for macOS (Universal - x64 and arm64)
 pnpm build:mac
 
-# Build for Windows
-pnpm build:win
+# Build for macOS Intel only
+pnpm build:mac:intel
 
-# Build for Linux
-pnpm build:linux
+# Build for macOS Apple Silicon only
+pnpm build:mac:apple
 
-# Build unpacked for all platforms
+# Build unpacked
 pnpm build:unpack
 ```
 
@@ -44,7 +44,7 @@ pnpm build:unpack
 ### Prerequisites
 - **Node.js**: v22.16.0 (managed by Volta - see [package.json](mdc:package.json))
 - **Package Manager**: pnpm (preferred), npm, yarn, or bun
-- **OS Support**: macOS, Windows, Linux
+- **OS Support**: macOS
 
 ### Hot Module Replacement
 - **Renderer**: Full HMR support through Vite
@@ -93,10 +93,10 @@ The build process is configured in [electron.vite.config.ts](mdc:electron.vite.c
 
 ### Electron Builder
 Packaging configuration in [electron-builder.yml](mdc:electron-builder.yml):
-- Cross-platform builds
+- macOS-only builds (dmg format)
 - Code signing (configure for production)
 - Auto-updater support
-- Distribution formats (dmg, exe, AppImage)
+- Notarization support for distribution
 
 ## 🔧 Development Tips
 

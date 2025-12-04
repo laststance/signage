@@ -10,11 +10,8 @@ export function createAppWindow(): void {
     show: false,
     backgroundColor: '#000000',
     icon: appIcon,
-    // Enable frame on Windows so menu bar can be displayed
-    // Keep frameless on macOS for native look
-    frame: process.platform !== 'darwin',
-    // titleBarStyle only works on macOS
-    ...(process.platform === 'darwin' && { titleBarStyle: 'hiddenInset' as const }),
+    frame: false,
+    titleBarStyle: 'hiddenInset',
     title: 'Signage',
     maximizable: true,
     resizable: true,

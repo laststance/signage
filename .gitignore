@@ -4,3 +4,8 @@ out
 .DS_Store
 *.log*
 temp
+
+# Claude-generated documentation
+claudedocs/
+PROJECT_INDEX.md
+PROJECT_INDEX.json

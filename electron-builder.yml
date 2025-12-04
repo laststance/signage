@@ -17,6 +17,7 @@ mac:
       arch:
         - x64
         - arm64
+  entitlements: resources/build/entitlements.mac.plist
   entitlementsInherit: resources/build/entitlements.mac.plist
   extendInfo:
     - NSCameraUsageDescription: Application requests access to the device's camera.
@@ -24,15 +25,14 @@ mac:
     - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
   # macOS code signing and notarization
-  # Set CSC_LINK and CSC_KEY_PASSWORD environment variables for certificates
-  # For notarization, set one of these environment variable sets:
-  # 1. APPLE_API_KEY, APPLE_API_KEY_ID and APPLE_API_ISSUER
-  # 2. APPLE_ID, APPLE_APP_SPECIFIC_PASSWORD, and APPLE_TEAM_ID
-  # 3. APPLE_KEYCHAIN and APPLE_KEYCHAIN_PROFILE
-  identity: # Will be auto-detected or set via CSC_NAME
-  notarize: false # Set to true when you have proper credentials
+  # Option 1 (Recommended): Use Keychain Profile
+  #   APPLE_KEYCHAIN_PROFILE=signage-notarize pnpm build:mac
+  # Option 2: Use environment variables
+  #   APPLE_ID, APPLE_APP_SPECIFIC_PASSWORD, APPLE_TEAM_ID
+  # identity is auto-detected from Keychain (Developer ID Application certificate)
+  notarize: true
   hardenedRuntime: true # Required for notarization
-  gatekeeperAssess: false # Disable gatekeeper assessment for development
+  gatekeeperAssess: false # Disable gatekeeper assessment during build
 dmg:
   artifactName: ${name}-${version}-${arch}.${ext}
 npmRebuild: false

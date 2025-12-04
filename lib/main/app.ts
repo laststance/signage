@@ -1,9 +1,11 @@
 import { join } from 'path'
 
-import { BrowserWindow, shell, app } from 'electron'
+import { app, BrowserWindow, shell } from 'electron'
 
 import { registerWindowIPC } from '@/lib/window/ipcEvents'
 import appIcon from '@/resources/build/icon.png?asset'
+
+import { setMainWindow } from './windowManager'
 
 export function createAppWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -23,6 +25,9 @@ export function createAppWindow(): void {
       sandbox: false,
     },
   })
+
+  // Register window with windowManager for toggle functionality
+  setMainWindow(mainWindow)
 
   // Register IPC events for the main window.
   registerWindowIPC(mainWindow)

@@ -1,8 +1,27 @@
 import type { MenuItemConstructorOptions } from 'electron'
 import { app, Menu, BrowserWindow } from 'electron'
 
+import {
+  isDockHidden,
+  toggleDockIcon,
+  toggleSignageWindow,
+} from './windowManager'
+
 // Visual mode state
 let isAutoMode = false
+
+/** Callback to rebuild tray menu when visual mode changes */
+let trayRebuildCallback: (() => void) | null = null
+
+/**
+ * Sets the callback function to rebuild tray menu.
+ * Called when visual mode changes to keep tray in sync.
+ *
+ * @param callback - Function to rebuild tray menu
+ */
+export function setTrayRebuildCallback(callback: () => void): void {
+  trayRebuildCallback = callback
+}
 
 export function createApplicationMenu(): Menu {
   const template: MenuItemConstructorOptions[] = [
@@ -11,6 +30,16 @@ export function createApplicationMenu(): Menu {
       label: app.getName(),
       submenu: [
         { role: 'about' as const },
+        { type: 'separator' as const },
+        {
+          label: 'Toggle Signage',
+          accelerator: 'CommandOrControl+Shift+S',
+          click: () => toggleSignageWindow(),
+        },
+        {
+          label: isDockHidden() ? 'Show App Icon' : 'Hide App Icon',
+          click: () => toggleDockIcon(),
+        },
         { type: 'separator' as const },
         {
           label: 'Default Mode',
@@ -106,12 +135,22 @@ export function createApplicationMenu(): Menu {
   return Menu.buildFromTemplate(template)
 }
 
-function setVisualMode(autoMode: boolean): void {
+/**
+ * Sets the visual mode and updates all menus.
+ *
+ * @param autoMode - true for auto mode, false for default mode
+ */
+export function setVisualMode(autoMode: boolean): void {
   isAutoMode = autoMode
 
-  // Update menu
+  // Update app menu
   const menu = createApplicationMenu()
   Menu.setApplicationMenu(menu)
+
+  // Rebuild tray menu to sync state
+  if (trayRebuildCallback) {
+    trayRebuildCallback()
+  }
 
   // Notify renderer process
   const mainWindow = BrowserWindow.getFocusedWindow()

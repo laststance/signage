@@ -9,8 +9,6 @@
  * - Start at login setting
  * - Standard native macOS menu style
  */
-import { join } from 'path'
-
 import { app, Menu, nativeImage, Tray } from 'electron'
 
 import {
@@ -32,28 +30,78 @@ let getVisualModeCallback: (() => boolean) | null = null
 let setVisualModeCallback: ((autoMode: boolean) => void) | null = null
 
 /**
- * Creates a 16x16 Template icon for macOS menu bar.
- * Template images are automatically inverted in dark mode.
+ * Super dark gray color with transparency for menu bar icon.
  *
- * @returns NativeImage suitable for Tray
+ * @color #111111 (RGB 17, 17, 17) with 70% opacity (alpha 178)
+ * @rationale Ultra-dark gray with transparency for a subtle, refined appearance.
+ *            The transparency allows the icon to blend slightly with the menu bar
+ *            while maintaining visibility and professional aesthetics.
+ *
+ * @example Alpha scale reference:
+ *   - 255 = 100% opaque (fully solid)
+ *   - 204 = 80% opacity
+ *   - 178 = 70% opacity ← Current
+ *   - 128 = 50% opacity
+ */
+const TRAY_ICON_HEX = '#111111' as const
+const TRAY_ICON_OPACITY = 0.5 as const
+const TRAY_ICON_COLOR = {
+  hex: TRAY_ICON_HEX,
+  r: 17,
+  g: 17,
+  b: 17,
+  a: Math.round(255 * TRAY_ICON_OPACITY), // 178 (~70% opacity)
+} as const
+
+/**
+ * Creates a 16x16 super dark gray icon for macOS menu bar.
+ * Uses custom color instead of template image for precise color control.
+ *
+ * @returns NativeImage with super dark gray filled square
  */
 function createTrayIcon(): Electron.NativeImage {
-  // Use file-based template icon for reliability
-  // Template icons must be named with "Template" suffix and be black on transparent
-  const iconPath = join(__dirname, '../../resources/tray/iconTemplate.png')
-  const icon = nativeImage.createFromPath(iconPath)
+  // Create 16x16 icon (standard) and 32x32 (@2x for Retina)
+  const size = 16
+  const size2x = 32
 
-  // If file doesn't exist in dev, fallback to data URL
-  if (icon.isEmpty()) {
-    // Fallback: 16x16 filled square on transparent (macOS template icon)
-    const fallbackDataUrl =
-      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAB3RJTUUH6QwECjE5I8KQ0AAAAB9JREFUOMtjYBhowIjE/k+OXiZKXTBqwKgBg8OAgQcAtksBGILoGLcAAAAASUVORK5CYII='
-    const fallbackIcon = nativeImage.createFromDataURL(fallbackDataUrl)
-    fallbackIcon.setTemplateImage(true)
-    return fallbackIcon
+  // Create raw RGBA buffer for 16x16 icon
+  const buffer = Buffer.alloc(size * size * 4)
+  for (let i = 0; i < size * size; i++) {
+    const offset = i * 4
+    buffer[offset] = TRAY_ICON_COLOR.r // Red
+    buffer[offset + 1] = TRAY_ICON_COLOR.g // Green
+    buffer[offset + 2] = TRAY_ICON_COLOR.b // Blue
+    buffer[offset + 3] = TRAY_ICON_COLOR.a // Alpha
   }
 
-  icon.setTemplateImage(true)
+  // Create raw RGBA buffer for 32x32 icon (Retina @2x)
+  const buffer2x = Buffer.alloc(size2x * size2x * 4)
+  for (let i = 0; i < size2x * size2x; i++) {
+    const offset = i * 4
+    buffer2x[offset] = TRAY_ICON_COLOR.r
+    buffer2x[offset + 1] = TRAY_ICON_COLOR.g
+    buffer2x[offset + 2] = TRAY_ICON_COLOR.b
+    buffer2x[offset + 3] = TRAY_ICON_COLOR.a
+  }
+
+  // Create nativeImage from raw RGBA buffer
+  const icon = nativeImage.createFromBuffer(buffer, {
+    width: size,
+    height: size,
+  })
+
+  // Add high-DPI representation for Retina displays (@2x)
+  icon.addRepresentation({
+    width: size2x,
+    height: size2x,
+    scaleFactor: 2.0,
+    buffer: buffer2x,
+  })
+
+  // Do NOT set as template image - we want our specific gray color
+  // Template images would be automatically colorized by macOS
+  icon.setTemplateImage(false)
+
   return icon
 }
 

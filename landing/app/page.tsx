@@ -132,7 +132,7 @@ export default function Home() {
                     </h3>
                     <div className="flex flex-col lg:flex-row gap-4 justify-center items-center">
                       <a
-                        href="https://github.com/laststance/signage/releases/download/v1.1.1/signage-1.1.1-arm64.dmg"
+                        href="https://github.com/laststance/signage/releases/download/v1.2.0/signage-1.2.0-arm64.dmg"
                         className="group relative overflow-hidden bg-white text-black px-6 py-4 rounded-full text-base font-medium transition-all duration-300 hover:bg-gray-100 hover:scale-105 w-full sm:w-auto inline-block"
                       >
                         <span className="relative z-10 flex items-center justify-center gap-3">
@@ -154,7 +154,7 @@ export default function Home() {
                       </a>
 
                       <a
-                        href="https://github.com/laststance/signage/releases/download/v1.1.1/signage-1.1.1-x64.dmg"
+                        href="https://github.com/laststance/signage/releases/download/v1.2.0/signage-1.2.0-x64.dmg"
                         className="group relative overflow-hidden bg-gray-200 text-black px-6 py-4 rounded-full text-base font-medium transition-all duration-300 hover:bg-gray-300 hover:scale-105 w-full sm:w-auto inline-block"
                       >
                         <span className="relative z-10 flex items-center justify-center gap-3">

@@ -21,7 +21,7 @@ export function createAppWindow(): void {
     resizable: true,
     fullscreenable: true,
     webPreferences: {
-      preload: join(__dirname, '../preload/preload.js'),
+      preload: join(__dirname, '../preload/preload.mjs'),
       sandbox: false,
     },
   })

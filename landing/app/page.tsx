@@ -1,4 +1,6 @@
 'use client'
+import { useState } from 'react'
+import DemoModal from './components/DemoModal'
 
 // Pre-computed star positions at module load time (pure, no render-time randomness)
 const STAR_COUNT = 50
@@ -13,8 +15,12 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => ({
 }))
 
 export default function Home() {
+  const [isDemoOpen, setIsDemoOpen] = useState(false)
+
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
+      {/* Demo Modal */}
+      <DemoModal isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
       {/* Background Animation */}
       <div className="fixed inset-0 overflow-hidden">
         <div className="absolute inset-0">
@@ -80,10 +86,42 @@ export default function Home() {
                   screen saver that promotes mental clarity
                 </p>
 
-                <p className="text-lg sm:text-xl text-gray-500 mb-12 max-w-2xl mx-auto">
+                <p className="text-lg sm:text-xl text-gray-500 mb-8 max-w-2xl mx-auto">
                   Transform idle screen time into mindful moments • Available
                   for macOS
                 </p>
+
+                {/* Try Demo Button */}
+                <div className="mb-12">
+                  <button
+                    onClick={() => setIsDemoOpen(true)}
+                    className="group relative overflow-hidden bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25"
+                  >
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      Try Demo
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                  </button>
+                </div>
 
                 {/* Download Buttons */}
                 <div id="download" className="space-y-8">

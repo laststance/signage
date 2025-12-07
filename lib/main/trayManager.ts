@@ -5,11 +5,13 @@
  * Features:
  * - Toggle Signage window visibility
  * - Toggle Dock icon visibility
- * - Visual mode switching (Default/Auto)
+ * - Visual mode switching (Default/Auto/Black Mirror)
  * - Start at login setting
  * - Standard native macOS menu style
  */
 import { app, Menu, nativeImage, Tray } from 'electron'
+
+import type { VisualMode } from '@/lib/types/visualMode'
 
 import {
   isDockHidden,
@@ -21,13 +23,13 @@ import {
 let tray: Tray | null = null
 
 /** Visual mode state - synchronized with menu.ts */
-let isAutoMode = false
+let currentVisualMode: VisualMode = 'default'
 
 /** Callback to get current visual mode state from menu */
-let getVisualModeCallback: (() => boolean) | null = null
+let getVisualModeCallback: (() => VisualMode) | null = null
 
 /** Callback to set visual mode (updates both tray and app menu) */
-let setVisualModeCallback: ((autoMode: boolean) => void) | null = null
+let setVisualModeCallback: ((mode: VisualMode) => void) | null = null
 
 /**
  * Super dark gray color with transparency for menu bar icon.
@@ -111,9 +113,9 @@ function createTrayIcon(): Electron.NativeImage {
  * @returns Menu instance with all tray options
  */
 function buildTrayMenu(): Menu {
-  const currentAutoMode = getVisualModeCallback
+  const activeMode = getVisualModeCallback
     ? getVisualModeCallback()
-    : isAutoMode
+    : currentVisualMode
   const loginSettings = app.getLoginItemSettings()
 
   const template: Electron.MenuItemConstructorOptions[] = [
@@ -126,12 +128,12 @@ function buildTrayMenu(): Menu {
     {
       label: 'Default Mode',
       type: 'radio',
-      checked: !currentAutoMode,
+      checked: activeMode === 'default',
       click: () => {
         if (setVisualModeCallback) {
-          setVisualModeCallback(false)
+          setVisualModeCallback('default')
         } else {
-          isAutoMode = false
+          currentVisualMode = 'default'
         }
         rebuildTrayMenu()
       },
@@ -139,12 +141,25 @@ function buildTrayMenu(): Menu {
     {
       label: 'Auto Mode',
       type: 'radio',
-      checked: currentAutoMode,
+      checked: activeMode === 'auto',
       click: () => {
         if (setVisualModeCallback) {
-          setVisualModeCallback(true)
+          setVisualModeCallback('auto')
         } else {
-          isAutoMode = true
+          currentVisualMode = 'auto'
+        }
+        rebuildTrayMenu()
+      },
+    },
+    {
+      label: 'Black Mirror Mode',
+      type: 'radio',
+      checked: activeMode === 'blackmirror',
+      click: () => {
+        if (setVisualModeCallback) {
+          setVisualModeCallback('blackmirror')
+        } else {
+          currentVisualMode = 'blackmirror'
         }
         rebuildTrayMenu()
       },
@@ -196,8 +211,8 @@ export function rebuildTrayMenu(): void {
  * @param setter - Function to set visual mode
  */
 export function setVisualModeCallbacks(
-  getter: () => boolean,
-  setter: (autoMode: boolean) => void,
+  getter: () => VisualMode,
+  setter: (mode: VisualMode) => void,
 ): void {
   getVisualModeCallback = getter
   setVisualModeCallback = setter

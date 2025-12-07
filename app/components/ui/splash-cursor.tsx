@@ -1,6 +1,8 @@
 'use client'
 import { useEffect, useRef, useState, useCallback } from 'react'
 
+import type { VisualMode } from '@/lib/types/visualMode'
+
 export default function SplashCursor({
   // Add whatever props you like for customization
   SIM_RESOLUTION = 128,
@@ -19,8 +21,8 @@ export default function SplashCursor({
   TRANSPARENT = true,
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
-  const [isAutoMode, setIsAutoMode] = useState(false)
-  const isAutoModeRef = useRef(false)
+  const [visualMode, setVisualMode] = useState<VisualMode>('default')
+  const visualModeRef = useRef<VisualMode>('default')
   const autoModeIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const animationFrameRef = useRef<number | null>(null)
 
@@ -59,11 +61,11 @@ export default function SplashCursor({
     }
   }, [])
 
-  // Handle auto mode state changes
+  // Handle visual mode state changes
   useEffect(() => {
-    const handleModeChange = (isAuto: boolean) => {
-      setIsAutoMode(isAuto)
-      isAutoModeRef.current = isAuto
+    const handleModeChange = (mode: VisualMode) => {
+      setVisualMode(mode)
+      visualModeRef.current = mode
     }
 
     // Listen for mode changes from main process
@@ -73,9 +75,9 @@ export default function SplashCursor({
       // Get initial state
       window.api
         .invoke('visual-mode-get-state')
-        .then((initialState: boolean) => {
-          setIsAutoMode(initialState)
-          isAutoModeRef.current = initialState
+        .then((initialState: VisualMode) => {
+          setVisualMode(initialState)
+          visualModeRef.current = initialState
         })
     }
 
@@ -86,9 +88,9 @@ export default function SplashCursor({
     }
   }, [])
 
-  // Handle auto mode interval
+  // Handle auto mode interval (only active in 'auto' mode, not in 'blackmirror')
   useEffect(() => {
-    if (isAutoMode) {
+    if (visualMode === 'auto') {
       // Start auto mode with random movements every 100-500ms
       const startAutoMode = () => {
         const randomInterval = 100 + Math.random() * 400
@@ -99,7 +101,7 @@ export default function SplashCursor({
       }
       startAutoMode()
     } else {
-      // Clear auto mode interval
+      // Clear auto mode interval (applies to both 'default' and 'blackmirror')
       if (autoModeIntervalRef.current) {
         clearTimeout(autoModeIntervalRef.current)
         autoModeIntervalRef.current = null
@@ -111,7 +113,7 @@ export default function SplashCursor({
         clearTimeout(autoModeIntervalRef.current)
       }
     }
-  }, [isAutoMode, generateRandomMovement])
+  }, [visualMode, generateRandomMovement])
 
   useEffect(() => {
     const canvas: HTMLCanvasElement | null = canvasRef.current
@@ -1253,7 +1255,7 @@ export default function SplashCursor({
     }
 
     const handleMouseDown = (e) => {
-      if (isAutoModeRef.current) return // Skip mouse events in auto mode
+      if (visualModeRef.current !== 'default') return // Skip events in non-default modes
       const pointer = pointers[0]
       const posX = scaleByPixelRatio(e.clientX)
       const posY = scaleByPixelRatio(e.clientY)
@@ -1266,7 +1268,7 @@ export default function SplashCursor({
     document.body.addEventListener(
       'mousemove',
       function handleFirstMouseMove(e) {
-        if (isAutoModeRef.current) return // Skip mouse events in auto mode
+        if (visualModeRef.current !== 'default') return // Skip events in non-default modes
         const pointer = pointers[0]
         const posX = scaleByPixelRatio(e.clientX)
         const posY = scaleByPixelRatio(e.clientY)
@@ -1278,7 +1280,7 @@ export default function SplashCursor({
     )
 
     const handleMouseMove = (e) => {
-      if (isAutoModeRef.current) return // Skip mouse events in auto mode
+      if (visualModeRef.current !== 'default') return // Skip events in non-default modes
       const pointer = pointers[0]
       const posX = scaleByPixelRatio(e.clientX)
       const posY = scaleByPixelRatio(e.clientY)
@@ -1291,7 +1293,7 @@ export default function SplashCursor({
     document.body.addEventListener(
       'touchstart',
       function handleFirstTouchStart(e) {
-        if (isAutoModeRef.current) return // Skip touch events in auto mode
+        if (visualModeRef.current !== 'default') return // Skip events in non-default modes
         const touches = e.targetTouches
         const pointer = pointers[0]
         for (let i = 0; i < touches.length; i++) {
@@ -1305,7 +1307,7 @@ export default function SplashCursor({
     )
 
     const handleTouchStart = (e) => {
-      if (isAutoModeRef.current) return // Skip touch events in auto mode
+      if (visualModeRef.current !== 'default') return // Skip events in non-default modes
       const touches = e.targetTouches
       const pointer = pointers[0]
       for (let i = 0; i < touches.length; i++) {
@@ -1318,7 +1320,7 @@ export default function SplashCursor({
     window.addEventListener('touchstart', handleTouchStart)
 
     const handleTouchMove = (e) => {
-      if (isAutoModeRef.current) return // Skip touch events in auto mode
+      if (visualModeRef.current !== 'default') return // Skip events in non-default modes
       const touches = e.targetTouches
       const pointer = pointers[0]
       for (let i = 0; i < touches.length; i++) {
@@ -1331,7 +1333,7 @@ export default function SplashCursor({
     window.addEventListener('touchmove', handleTouchMove, false)
 
     const handleTouchEnd = (e) => {
-      if (isAutoModeRef.current) return // Skip touch events in auto mode
+      if (visualModeRef.current !== 'default') return // Skip events in non-default modes
       const touches = e.changedTouches
       const pointer = pointers[0]
       for (let i = 0; i < touches.length; i++) {

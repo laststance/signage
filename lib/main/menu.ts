@@ -1,6 +1,8 @@
 import type { MenuItemConstructorOptions } from 'electron'
 import { app, Menu, BrowserWindow } from 'electron'
 
+import type { VisualMode } from '@/lib/types/visualMode'
+
 import {
   isDockHidden,
   toggleDockIcon,
@@ -8,7 +10,7 @@ import {
 } from './windowManager'
 
 // Visual mode state
-let isAutoMode = false
+let currentVisualMode: VisualMode = 'default'
 
 /** Callback to rebuild tray menu when visual mode changes */
 let trayRebuildCallback: (() => void) | null = null
@@ -44,14 +46,20 @@ export function createApplicationMenu(): Menu {
         {
           label: 'Default Mode',
           type: 'radio' as const,
-          checked: !isAutoMode,
-          click: () => setVisualMode(false),
+          checked: currentVisualMode === 'default',
+          click: () => setVisualMode('default'),
         },
         {
           label: 'Auto Mode',
           type: 'radio' as const,
-          checked: isAutoMode,
-          click: () => setVisualMode(true),
+          checked: currentVisualMode === 'auto',
+          click: () => setVisualMode('auto'),
+        },
+        {
+          label: 'Black Mirror Mode',
+          type: 'radio' as const,
+          checked: currentVisualMode === 'blackmirror',
+          click: () => setVisualMode('blackmirror'),
         },
         { type: 'separator' as const },
         { role: 'services' as const },
@@ -138,10 +146,10 @@ export function createApplicationMenu(): Menu {
 /**
  * Sets the visual mode and updates all menus.
  *
- * @param autoMode - true for auto mode, false for default mode
+ * @param mode - The visual mode to set ('default', 'auto', or 'blackmirror')
  */
-export function setVisualMode(autoMode: boolean): void {
-  isAutoMode = autoMode
+export function setVisualMode(mode: VisualMode): void {
+  currentVisualMode = mode
 
   // Update app menu
   const menu = createApplicationMenu()
@@ -155,10 +163,10 @@ export function setVisualMode(autoMode: boolean): void {
   // Notify renderer process
   const mainWindow = BrowserWindow.getFocusedWindow()
   if (mainWindow) {
-    mainWindow.webContents.send('visual-mode-changed', isAutoMode)
+    mainWindow.webContents.send('visual-mode-changed', currentVisualMode)
   }
 }
 
-export function getVisualModeState(): boolean {
-  return isAutoMode
+export function getVisualModeState(): VisualMode {
+  return currentVisualMode
 }

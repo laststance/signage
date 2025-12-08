@@ -215,9 +215,7 @@ href =
 
 ### 5. Deploy Landing Page
 
-```bash
-cd landing && vercel --prod
-```
+Landing page is auto-deployed via Vercel on push to main branch. No manual deployment needed.
 
 ### 6. Commit Changes
 

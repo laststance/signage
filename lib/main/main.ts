@@ -3,11 +3,16 @@ import { app, BrowserWindow, Menu } from 'electron'
 
 import { createAppWindow } from './app'
 import {
+  registerGlobalShortcuts,
+  unregisterGlobalShortcuts,
+} from './globalShortcuts'
+import {
   createApplicationMenu,
   getVisualModeState,
   setTrayRebuildCallback,
   setVisualMode,
 } from './menu'
+import { registerSettingsWindowIPC } from './settingsWindow'
 import {
   createTray,
   rebuildTrayMenu,
@@ -41,6 +46,12 @@ app.whenReady().then(() => {
   setVisualModeCallbacks(getVisualModeState, setVisualMode)
   createTray()
 
+  // Register global shortcuts (works even when app is not focused)
+  registerGlobalShortcuts()
+
+  // Register settings window IPC handlers
+  registerSettingsWindowIPC()
+
   // Create app window
   createAppWindow()
 
@@ -63,6 +74,11 @@ app.whenReady().then(() => {
 // The window-all-closed handler is intentionally empty to preserve this behavior.
 app.on('window-all-closed', () => {
   // macOS: Do nothing - app stays in dock/tray
+})
+
+// Unregister global shortcuts when quitting
+app.on('will-quit', () => {
+  unregisterGlobalShortcuts()
 })
 // In this file, you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.

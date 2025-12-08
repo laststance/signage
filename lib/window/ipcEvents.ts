@@ -2,7 +2,13 @@ import os from 'os'
 
 import { type BrowserWindow, ipcMain, shell } from 'electron'
 
+import {
+  changeToggleShortcut,
+  getCurrentShortcut,
+  resetToggleShortcut,
+} from '../main/globalShortcuts'
 import { getVisualModeState } from '../main/menu'
+import { SHORTCUT_PRESETS } from '../main/settings'
 
 const handleIPC = (channel: string, handler: (...args: any[]) => void) => {
   ipcMain.handle(channel, handler)
@@ -63,4 +69,12 @@ export const registerWindowIPC = (mainWindow: BrowserWindow) => {
 
   // Visual mode IPC handlers (now handled by menu)
   handleIPC('visual-mode-get-state', () => getVisualModeState())
+
+  // Global shortcut IPC handlers
+  handleIPC('shortcut-get-current', () => getCurrentShortcut())
+  handleIPC('shortcut-get-presets', () => SHORTCUT_PRESETS)
+  handleIPC('shortcut-change', (_e, newShortcut: string) =>
+    changeToggleShortcut(newShortcut),
+  )
+  handleIPC('shortcut-reset', () => resetToggleShortcut())
 }

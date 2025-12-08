@@ -3,6 +3,8 @@ import { app, Menu, BrowserWindow } from 'electron'
 
 import type { VisualMode } from '@/lib/types/visualMode'
 
+import { DEFAULT_TOGGLE_SHORTCUT } from './settings'
+import { openSettingsWindow } from './settingsWindow'
 import {
   isDockHidden,
   toggleDockIcon,
@@ -41,6 +43,12 @@ export function createApplicationMenu(): Menu {
         {
           label: isDockHidden() ? 'Show App Icon' : 'Hide App Icon',
           click: () => toggleDockIcon(),
+        },
+        { type: 'separator' as const },
+        {
+          label: 'Settings...',
+          accelerator: 'CommandOrControl+,',
+          click: () => openSettingsWindow(),
         },
         { type: 'separator' as const },
         {

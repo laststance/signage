@@ -5,6 +5,9 @@ out
 *.log*
 temp
 
+# Logs and security keys
+logs/
+
 # Claude-generated documentation
 claudedocs/
 PROJECT_INDEX.md

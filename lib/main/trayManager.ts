@@ -35,34 +35,27 @@ let getVisualModeCallback: (() => VisualMode) | null = null
 let setVisualModeCallback: ((mode: VisualMode) => void) | null = null
 
 /**
- * Super dark gray color with transparency for menu bar icon.
+ * White color for menu bar icon - rest/mindfulness theme.
  *
- * @color #111111 (RGB 17, 17, 17) with 70% opacity (alpha 178)
- * @rationale Ultra-dark gray with transparency for a subtle, refined appearance.
- *            The transparency allows the icon to blend slightly with the menu bar
- *            while maintaining visibility and professional aesthetics.
- *
- * @example Alpha scale reference:
- *   - 255 = 100% opaque (fully solid)
- *   - 204 = 80% opacity
- *   - 178 = 70% opacity ← Current
- *   - 128 = 50% opacity
+ * @color #FFFFFF (RGB 255, 255, 255) with 90% opacity
+ * @rationale White provides excellent visibility on macOS menu bar
+ *            while the zen circle design evokes rest and mindfulness.
  */
-const TRAY_ICON_HEX = '#111111' as const
-const TRAY_ICON_OPACITY = 0.5 as const
+const TRAY_ICON_HEX = '#FFFFFF' as const
+const TRAY_ICON_OPACITY = 0.9 as const
 const TRAY_ICON_COLOR = {
   hex: TRAY_ICON_HEX,
-  r: 17,
-  g: 17,
-  b: 17,
-  a: Math.round(255 * TRAY_ICON_OPACITY), // 178 (~70% opacity)
+  r: 255,
+  g: 255,
+  b: 255,
+  a: Math.round(255 * TRAY_ICON_OPACITY), // 230 (~90% opacity)
 } as const
 
 /**
- * Creates a 16x16 super dark gray icon for macOS menu bar.
- * Uses custom color instead of template image for precise color control.
+ * Creates a 16x16 zen circle icon for macOS menu bar.
+ * Design: Outer ring with inner dot - evokes rest, mindfulness, and focus.
  *
- * @returns NativeImage with super dark gray filled square
+ * @returns NativeImage with zen circle design
  */
 function createTrayIcon(): Electron.NativeImage {
   // Create 16x16 icon (standard) and 32x32 (@2x for Retina)
@@ -71,22 +64,67 @@ function createTrayIcon(): Electron.NativeImage {
 
   // Create raw RGBA buffer for 16x16 icon
   const buffer = Buffer.alloc(size * size * 4)
-  for (let i = 0; i < size * size; i++) {
-    const offset = i * 4
-    buffer[offset] = TRAY_ICON_COLOR.r // Red
-    buffer[offset + 1] = TRAY_ICON_COLOR.g // Green
-    buffer[offset + 2] = TRAY_ICON_COLOR.b // Blue
-    buffer[offset + 3] = TRAY_ICON_COLOR.a // Alpha
+  const centerX = size / 2
+  const centerY = size / 2
+  const outerRadius = 6.5 // Outer ring radius
+  const innerRadius = 4.5 // Inner ring radius (creates ring effect)
+  const dotRadius = 1.5 // Center dot radius
+
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const offset = (y * size + x) * 4
+      const dx = x - centerX + 0.5
+      const dy = y - centerY + 0.5
+      const distance = Math.sqrt(dx * dx + dy * dy)
+
+      // Check if pixel is part of the outer ring or center dot
+      const isOuterRing = distance <= outerRadius && distance >= innerRadius
+      const isCenterDot = distance <= dotRadius
+
+      if (isOuterRing || isCenterDot) {
+        buffer[offset] = TRAY_ICON_COLOR.r // Red
+        buffer[offset + 1] = TRAY_ICON_COLOR.g // Green
+        buffer[offset + 2] = TRAY_ICON_COLOR.b // Blue
+        buffer[offset + 3] = TRAY_ICON_COLOR.a // Alpha
+      } else {
+        buffer[offset] = 0
+        buffer[offset + 1] = 0
+        buffer[offset + 2] = 0
+        buffer[offset + 3] = 0 // Transparent
+      }
+    }
   }
 
   // Create raw RGBA buffer for 32x32 icon (Retina @2x)
   const buffer2x = Buffer.alloc(size2x * size2x * 4)
-  for (let i = 0; i < size2x * size2x; i++) {
-    const offset = i * 4
-    buffer2x[offset] = TRAY_ICON_COLOR.r
-    buffer2x[offset + 1] = TRAY_ICON_COLOR.g
-    buffer2x[offset + 2] = TRAY_ICON_COLOR.b
-    buffer2x[offset + 3] = TRAY_ICON_COLOR.a
+  const centerX2x = size2x / 2
+  const centerY2x = size2x / 2
+  const outerRadius2x = 13 // Scaled for 2x
+  const innerRadius2x = 9 // Scaled for 2x
+  const dotRadius2x = 3 // Scaled for 2x
+
+  for (let y = 0; y < size2x; y++) {
+    for (let x = 0; x < size2x; x++) {
+      const offset = (y * size2x + x) * 4
+      const dx = x - centerX2x + 0.5
+      const dy = y - centerY2x + 0.5
+      const distance = Math.sqrt(dx * dx + dy * dy)
+
+      const isOuterRing = distance <= outerRadius2x && distance >= innerRadius2x
+      const isCenterDot = distance <= dotRadius2x
+
+      if (isOuterRing || isCenterDot) {
+        buffer2x[offset] = TRAY_ICON_COLOR.r
+        buffer2x[offset + 1] = TRAY_ICON_COLOR.g
+        buffer2x[offset + 2] = TRAY_ICON_COLOR.b
+        buffer2x[offset + 3] = TRAY_ICON_COLOR.a
+      } else {
+        buffer2x[offset] = 0
+        buffer2x[offset + 1] = 0
+        buffer2x[offset + 2] = 0
+        buffer2x[offset + 3] = 0
+      }
+    }
   }
 
   // Create nativeImage from raw RGBA buffer
@@ -103,8 +141,7 @@ function createTrayIcon(): Electron.NativeImage {
     buffer: buffer2x,
   })
 
-  // Do NOT set as template image - we want our specific gray color
-  // Template images would be automatically colorized by macOS
+  // Do NOT set as template image - we want our specific white color
   icon.setTemplateImage(false)
 
   return icon

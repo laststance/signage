@@ -12,7 +12,6 @@ interface ShortcutInputProps {
   value: string
   onChange: (shortcut: string) => void
   onValidate?: (shortcut: string) => boolean
-  placeholder?: string
   className?: string
 }
 
@@ -106,7 +105,6 @@ export default function ShortcutInput({
   value,
   onChange,
   onValidate,
-  placeholder = 'Click and press keys...',
   className,
 }: ShortcutInputProps) {
   const [isRecording, setIsRecording] = useState(false)
@@ -190,7 +188,6 @@ export default function ShortcutInput({
           type="text"
           value={displayValue}
           readOnly
-          placeholder={placeholder}
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}
           onBlur={handleBlur}

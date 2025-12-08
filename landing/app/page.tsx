@@ -1,6 +1,4 @@
 'use client'
-import { useState } from 'react'
-import DemoModal from './components/DemoModal'
 
 // Pre-computed star positions at module load time (pure, no render-time randomness)
 const STAR_COUNT = 50
@@ -15,12 +13,8 @@ const stars = Array.from({ length: STAR_COUNT }, (_, i) => ({
 }))
 
 export default function Home() {
-  const [isDemoOpen, setIsDemoOpen] = useState(false)
-
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
-      {/* Demo Modal */}
-      <DemoModal isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
       {/* Background Animation */}
       <div className="fixed inset-0 overflow-hidden">
         <div className="absolute inset-0">
@@ -93,9 +87,11 @@ export default function Home() {
 
                 {/* Try Demo Button */}
                 <div className="mb-12">
-                  <button
-                    onClick={() => setIsDemoOpen(true)}
-                    className="group relative overflow-hidden bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25"
+                  <a
+                    href="/demo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative overflow-hidden bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25 inline-block"
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
                       <svg
@@ -120,7 +116,7 @@ export default function Home() {
                       Try Demo
                     </span>
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                  </button>
+                  </a>
                 </div>
 
                 {/* Download Buttons */}
@@ -288,17 +284,36 @@ export default function Home() {
         <footer className="py-12 px-6 sm:px-12 border-t border-gray-800">
           <div className="max-w-7xl mx-auto text-center">
             <p className="text-gray-500 mb-4">
-              © 2024 Signage. Designed for mental wellness through mindful
-              breaks.
+              © 2024{' '}
+              <a
+                href="https://laststance.io/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-gray-400 transition-colors"
+              >
+                Laststance.io
+              </a>
+              . Designed for mental wellness through mindful breaks.
             </p>
             <div className="flex justify-center space-x-6 text-sm text-gray-600">
-              <a href="#" className="hover:text-gray-400 transition-colors">
+              <a
+                href="/privacy"
+                className="hover:text-gray-400 transition-colors"
+              >
                 Privacy
               </a>
-              <a href="#" className="hover:text-gray-400 transition-colors">
+              <a
+                href="/terms"
+                className="hover:text-gray-400 transition-colors"
+              >
                 Terms
               </a>
-              <a href="#" className="hover:text-gray-400 transition-colors">
+              <a
+                href="https://github.com/laststance/signage/issues"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-gray-400 transition-colors"
+              >
                 Support
               </a>
             </div>

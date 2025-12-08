@@ -1,6 +1,6 @@
 import os from 'os'
 
-import { type BrowserWindow, ipcMain, shell } from 'electron'
+import { app, type BrowserWindow, ipcMain, shell } from 'electron'
 
 import {
   changeToggleShortcut,
@@ -8,7 +8,17 @@ import {
   resetToggleShortcut,
 } from '../main/globalShortcuts'
 import { getVisualModeState } from '../main/menu'
-import { SHORTCUT_PRESETS } from '../main/settings'
+import {
+  getHideAppIcon,
+  getShowInMenuBar,
+  getStartAtLogin,
+  setHideAppIcon,
+  setShowInMenuBar,
+  setStartAtLogin,
+  SHORTCUT_PRESETS,
+} from '../main/settings'
+import { isTrayVisible, setTrayVisibility } from '../main/trayManager'
+import { isDockHidden, setDockIconVisibility } from '../main/windowManager'
 
 const handleIPC = (channel: string, handler: (...args: any[]) => void) => {
   ipcMain.handle(channel, handler)
@@ -77,4 +87,32 @@ export const registerWindowIPC = (mainWindow: BrowserWindow) => {
     changeToggleShortcut(newShortcut),
   )
   handleIPC('shortcut-reset', () => resetToggleShortcut())
+
+  // Settings IPC handlers
+  handleIPC('settings-get-show-in-menu-bar', () => getShowInMenuBar())
+  handleIPC('settings-set-show-in-menu-bar', (_e, show: boolean) => {
+    setShowInMenuBar(show)
+    setTrayVisibility(show)
+    return true
+  })
+  handleIPC('settings-get-tray-visible', () => isTrayVisible())
+
+  handleIPC('settings-get-hide-app-icon', () => getHideAppIcon())
+  handleIPC('settings-set-hide-app-icon', (_e, hide: boolean) => {
+    setHideAppIcon(hide)
+    setDockIconVisibility(hide)
+    return true
+  })
+  handleIPC('settings-get-dock-hidden', () => isDockHidden())
+
+  handleIPC('settings-get-start-at-login', () => getStartAtLogin())
+  handleIPC('settings-set-start-at-login', (_e, start: boolean) => {
+    setStartAtLogin(start)
+    app.setLoginItemSettings({
+      openAtLogin: start,
+      openAsHidden: true,
+    })
+    return true
+  })
+  handleIPC('settings-get-login-item', () => app.getLoginItemSettings())
 }

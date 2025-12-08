@@ -151,3 +151,33 @@ export function toggleDockIcon(): void {
 export function isDockHidden(): boolean {
   return isDockIconHidden
 }
+
+/**
+ * Sets the Dock icon visibility directly.
+ *
+ * @param hidden - true to hide the Dock icon, false to show it
+ */
+export function setDockIconVisibility(hidden: boolean): void {
+  if (hidden === isDockIconHidden) {
+    return // No change needed
+  }
+
+  if (hidden) {
+    app.setActivationPolicy('accessory')
+    isDockIconHidden = true
+  } else {
+    app.setActivationPolicy('regular')
+    isDockIconHidden = false
+  }
+
+  // Rebuild app menu to update label
+  if (menuRebuildCallback) {
+    const menu = menuRebuildCallback()
+    Menu.setApplicationMenu(menu)
+  }
+
+  // Rebuild tray menu to update label
+  if (trayRebuildCallback) {
+    trayRebuildCallback()
+  }
+}

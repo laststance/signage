@@ -300,3 +300,38 @@ export function destroyTray(): void {
     tray = null
   }
 }
+
+/**
+ * Shows the tray icon (creates if not exists).
+ */
+export function showTray(): void {
+  if (!tray) {
+    createTray()
+  }
+}
+
+/**
+ * Hides the tray icon (destroys it).
+ */
+export function hideTray(): void {
+  destroyTray()
+}
+
+/**
+ * Checks if the tray is currently visible.
+ */
+export function isTrayVisible(): boolean {
+  return tray !== null
+}
+
+/**
+ * Sets tray visibility.
+ * @param visible - Whether the tray should be visible
+ */
+export function setTrayVisibility(visible: boolean): void {
+  if (visible) {
+    showTray()
+  } else {
+    hideTray()
+  }
+}

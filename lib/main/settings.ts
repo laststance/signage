@@ -22,13 +22,19 @@ export const SHORTCUT_PRESETS = [
 ] as const
 
 /** Application settings structure */
-interface AppSettings {
+export interface AppSettings {
   toggleShortcut: string
+  showInMenuBar: boolean
+  hideAppIcon: boolean
+  startAtLogin: boolean
 }
 
 /** Default settings */
 const defaultSettings: AppSettings = {
   toggleShortcut: DEFAULT_TOGGLE_SHORTCUT,
+  showInMenuBar: true,
+  hideAppIcon: false,
+  startAtLogin: false,
 }
 
 /** Cached settings to avoid repeated file reads */
@@ -146,4 +152,52 @@ export function isValidShortcut(shortcut: string): boolean {
   }
 
   return validPattern.test(shortcut.replace(/\s/g, ''))
+}
+
+/**
+ * Gets whether the menu bar icon should be shown.
+ */
+export function getShowInMenuBar(): boolean {
+  return getSettings().showInMenuBar
+}
+
+/**
+ * Sets whether the menu bar icon should be shown.
+ */
+export function setShowInMenuBar(show: boolean): void {
+  const settings = getSettings()
+  settings.showInMenuBar = show
+  saveSettings(settings)
+}
+
+/**
+ * Gets whether the app icon should be hidden from the Dock.
+ */
+export function getHideAppIcon(): boolean {
+  return getSettings().hideAppIcon
+}
+
+/**
+ * Sets whether the app icon should be hidden from the Dock.
+ */
+export function setHideAppIcon(hide: boolean): void {
+  const settings = getSettings()
+  settings.hideAppIcon = hide
+  saveSettings(settings)
+}
+
+/**
+ * Gets whether the app should start at login.
+ */
+export function getStartAtLogin(): boolean {
+  return getSettings().startAtLogin
+}
+
+/**
+ * Sets whether the app should start at login.
+ */
+export function setStartAtLogin(start: boolean): void {
+  const settings = getSettings()
+  settings.startAtLogin = start
+  saveSettings(settings)
 }

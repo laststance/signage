@@ -155,3 +155,74 @@ Styles located in [app/styles/](app/styles/):
 - Node integration disabled in renderer
 - Preload scripts provide controlled API exposure
 - Sandbox mode disabled ([lib/main/app.ts](lib/main/app.ts)) - required for Electron functionality
+
+## Release Procedure
+
+When releasing a new version, follow these steps:
+
+### 1. Update Version
+
+```bash
+# Update version in package.json (e.g., 1.3.0 → 1.4.0)
+# Edit "version" field in package.json
+```
+
+### 2. Build Signed & Notarized Release
+
+```bash
+# Build for both Intel and Apple Silicon (signed & notarized)
+APPLE_KEYCHAIN_PROFILE=signage-notarize pnpm build:mac
+```
+
+Build outputs in `dist/`:
+
+- `signage-X.Y.Z-arm64.dmg` - Apple Silicon DMG
+- `signage-X.Y.Z-x64.dmg` - Intel DMG
+- `Signage-X.Y.Z-arm64-mac.zip` - Apple Silicon ZIP
+- `Signage-X.Y.Z-mac.zip` - Intel ZIP
+
+### 3. Create GitHub Release
+
+```bash
+gh release create vX.Y.Z \
+  --title "vX.Y.Z" \
+  --notes "## What's New in vX.Y.Z
+
+### New Features
+- Feature 1
+- Feature 2
+
+### Downloads
+- **Apple Silicon (M1/M2/M3)**: signage-X.Y.Z-arm64.dmg
+- **Intel Macs**: signage-X.Y.Z-x64.dmg" \
+  dist/signage-X.Y.Z-arm64.dmg \
+  dist/signage-X.Y.Z-x64.dmg \
+  dist/Signage-X.Y.Z-arm64-mac.zip \
+  dist/Signage-X.Y.Z-mac.zip
+```
+
+### 4. Update Landing Page Download Links
+
+Edit [landing/app/page.tsx](landing/app/page.tsx) and update the download URLs:
+
+```tsx
+// Update both Apple Silicon and Intel download links
+href =
+  'https://github.com/laststance/signage/releases/download/vX.Y.Z/signage-X.Y.Z-arm64.dmg'
+href =
+  'https://github.com/laststance/signage/releases/download/vX.Y.Z/signage-X.Y.Z-x64.dmg'
+```
+
+### 5. Deploy Landing Page
+
+```bash
+cd landing && vercel --prod
+```
+
+### 6. Commit Changes
+
+```bash
+git add .
+git commit -m "chore: bump version to X.Y.Z and update landing page"
+git push
+```

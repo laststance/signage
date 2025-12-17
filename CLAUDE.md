@@ -158,43 +158,72 @@ Styles located in [app/styles/](app/styles/):
 
 ## Release Procedure
 
-When releasing a new version, follow these steps:
+When releasing a new version, follow these steps in order:
 
-### 1. Update Version
+### Prerequisites
+
+- [ ] All feature/fix commits completed and pushed
+- [ ] TypeScript passes: `pnpm typecheck`
+- [ ] Lint passes: `pnpm lint`
+- [ ] Working tree is clean: `git status`
+
+### 1. Bump Version
+
+Edit `package.json` and increment the version:
+
+- **Patch**: Bug fixes (1.3.0 → 1.3.1)
+- **Minor**: New features (1.3.0 → 1.4.0)
+- **Major**: Breaking changes (1.3.0 → 2.0.0)
 
 ```bash
-# Update version in package.json (e.g., 1.3.0 → 1.4.0)
-# Edit "version" field in package.json
+# Commit the version bump
+git add package.json
+git commit -m "chore: bump version to X.Y.Z"
+git push origin main
 ```
 
-### 2. Build Signed & Notarized Release
+### 2. Build Signed & Notarized DMG
 
 ```bash
 # Build for both Intel and Apple Silicon (signed & notarized)
 APPLE_KEYCHAIN_PROFILE=signage-notarize pnpm build:mac
 ```
 
+**Note**: If the build fails due to network timeout, retry with architecture-specific commands:
+
+```bash
+# Apple Silicon only
+APPLE_KEYCHAIN_PROFILE=signage-notarize pnpm build:mac:apple
+
+# Intel only
+APPLE_KEYCHAIN_PROFILE=signage-notarize pnpm build:mac:intel
+```
+
 Build outputs in `dist/`:
 
-- `signage-X.Y.Z-arm64.dmg` - Apple Silicon DMG
-- `signage-X.Y.Z-x64.dmg` - Intel DMG
-- `Signage-X.Y.Z-arm64-mac.zip` - Apple Silicon ZIP
-- `Signage-X.Y.Z-mac.zip` - Intel ZIP
+| File                          | Description       |
+| ----------------------------- | ----------------- |
+| `signage-X.Y.Z-arm64.dmg`     | Apple Silicon DMG |
+| `signage-X.Y.Z-x64.dmg`       | Intel DMG         |
+| `Signage-X.Y.Z-arm64-mac.zip` | Apple Silicon ZIP |
+| `Signage-X.Y.Z-mac.zip`       | Intel ZIP         |
 
 ### 3. Create GitHub Release
 
 ```bash
 gh release create vX.Y.Z \
   --title "vX.Y.Z" \
-  --notes "## What's New in vX.Y.Z
+  --notes "$(cat <<'EOF'
+## What's New in vX.Y.Z
 
-### New Features
-- Feature 1
-- Feature 2
+### New Features / Bug Fixes
+- Description of changes
 
 ### Downloads
-- **Apple Silicon (M1/M2/M3)**: signage-X.Y.Z-arm64.dmg
-- **Intel Macs**: signage-X.Y.Z-x64.dmg" \
+- **Apple Silicon (M1/M2/M3/M4)**: signage-X.Y.Z-arm64.dmg
+- **Intel Macs**: signage-X.Y.Z-x64.dmg
+EOF
+)" \
   dist/signage-X.Y.Z-arm64.dmg \
   dist/signage-X.Y.Z-x64.dmg \
   dist/Signage-X.Y.Z-arm64-mac.zip \
@@ -203,24 +232,31 @@ gh release create vX.Y.Z \
 
 ### 4. Update Landing Page Download Links
 
-Edit [landing/app/page.tsx](landing/app/page.tsx) and update the download URLs:
+Edit [landing/app/page.tsx](landing/app/page.tsx) lines ~131 and ~153:
 
 ```tsx
-// Update both Apple Silicon and Intel download links
+// Apple Silicon link (~line 131)
 href =
   'https://github.com/laststance/signage/releases/download/vX.Y.Z/signage-X.Y.Z-arm64.dmg'
+
+// Intel link (~line 153)
 href =
   'https://github.com/laststance/signage/releases/download/vX.Y.Z/signage-X.Y.Z-x64.dmg'
 ```
 
-### 5. Deploy Landing Page
-
-Landing page is auto-deployed via Vercel on push to main branch. No manual deployment needed.
-
-### 6. Commit Changes
+### 5. Commit and Push Landing Page
 
 ```bash
-git add .
-git commit -m "chore: bump version to X.Y.Z and update landing page"
-git push
+git add landing/app/page.tsx
+git commit -m "docs: update download links to vX.Y.Z"
+git push origin main
 ```
+
+Landing page auto-deploys via Vercel on push to main branch.
+
+### Post-Release Verification
+
+- [ ] GitHub Release page shows all 4 assets
+- [ ] Landing page links download correct version
+- [ ] DMG installs and runs correctly on Apple Silicon
+- [ ] DMG installs and runs correctly on Intel Mac

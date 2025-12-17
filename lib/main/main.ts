@@ -1,7 +1,7 @@
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, Menu } from 'electron'
 
-import { createAppWindow } from './app'
+import { createAppWindow, getMainWindow } from './app'
 import {
   registerGlobalShortcuts,
   unregisterGlobalShortcuts,
@@ -18,6 +18,7 @@ import {
   rebuildTrayMenu,
   setVisualModeCallbacks,
 } from './trayManager'
+import { initializeUpdater } from './updater'
 import {
   setMenuRebuildCallback,
   setTrayRebuildCallback as setWindowManagerTrayCallback,
@@ -54,6 +55,12 @@ app.whenReady().then(() => {
 
   // Create app window
   createAppWindow()
+
+  // Initialize auto-updater after window is created
+  const mainWindow = getMainWindow()
+  if (mainWindow) {
+    initializeUpdater(mainWindow)
+  }
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.

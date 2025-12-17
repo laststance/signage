@@ -136,6 +136,40 @@ Three separate configs for different contexts:
 - **[components/Titlebar.tsx](lib/window/components/Titlebar.tsx)**: Custom titlebar UI
 - Menu includes window controls, edit operations, and visual mode toggle
 
+### Auto-Update System
+
+The application uses `electron-updater` for automatic updates with a VS Code/Slack-style UX pattern.
+
+**Components**:
+
+- **[lib/main/updater.ts](lib/main/updater.ts)**: Main process auto-updater logic
+- **[app/components/ui/update-banner.tsx](app/components/ui/update-banner.tsx)**: Non-intrusive update notification banner
+
+**Flow**:
+
+1. App checks for updates on startup (5s delay) and every 4 hours
+2. Updates download silently in background
+3. User sees non-intrusive banner at window bottom when update is ready
+4. User clicks "Restart" to install, or dismisses to continue working
+5. Update auto-installs on next app quit (`autoInstallOnAppQuit: true`)
+
+**Security Configuration**:
+
+- `allowDowngrade: false` - Prevents downgrade attacks (CVE-2024-39698 mitigation)
+- `allowPrerelease: false` - Only stable releases
+- Updates served from GitHub Releases (requires ZIP artifacts)
+
+**IPC Events**:
+
+- `update-checking` - Update check started
+- `update-available` - New version found
+- `update-not-available` - Already up to date
+- `update-progress` - Download progress (percent, speed, transferred, total)
+- `update-downloaded` - Ready to install
+- `update-error` - Error occurred
+
+**Manual Check**: Help menu → "Check for Updates..."
+
 ## Styling & UI
 
 - **TailwindCSS v4** with Vite plugin
@@ -256,7 +290,9 @@ Landing page auto-deploys via Vercel on push to main branch.
 
 ### Post-Release Verification
 
-- [ ] GitHub Release page shows all 4 assets
+- [ ] GitHub Release page shows all 4 assets (2 DMGs + 2 ZIPs)
 - [ ] Landing page links download correct version
 - [ ] DMG installs and runs correctly on Apple Silicon
 - [ ] DMG installs and runs correctly on Intel Mac
+- [ ] Auto-update works: existing installation detects new version
+- [ ] Update banner appears and "Restart" button functions correctly

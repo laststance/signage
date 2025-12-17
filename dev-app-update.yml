@@ -1,0 +1,5 @@
+# Development configuration for testing auto-updates locally
+# This file is used by electron-updater when running in development mode
+owner: laststance
+repo: signage
+provider: github

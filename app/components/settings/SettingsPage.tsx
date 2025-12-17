@@ -4,6 +4,8 @@
  * Extensible design for future settings additions.
  */
 import { useState, useEffect, useCallback } from 'react'
+
+import { Button } from '@/app/components/ui/button'
 import {
   Card,
   CardContent,
@@ -11,10 +13,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/app/components/ui/card'
-import { Button } from '@/app/components/ui/button'
 import { Label } from '@/app/components/ui/label'
 import { Separator } from '@/app/components/ui/separator'
 import { Switch } from '@/app/components/ui/switch'
+
 import ShortcutInput, { formatAcceleratorDisplay } from './ShortcutInput'
 
 interface Settings {
@@ -67,12 +69,6 @@ export default function SettingsPage() {
     }
     loadSettings()
   }, [])
-
-  const hasChanges =
-    settings.toggleShortcut !== originalSettings.toggleShortcut ||
-    settings.showInMenuBar !== originalSettings.showInMenuBar ||
-    settings.hideAppIcon !== originalSettings.hideAppIcon ||
-    settings.startAtLogin !== originalSettings.startAtLogin
 
   const handleShortcutChange = useCallback((shortcut: string) => {
     setSettings((prev) => ({ ...prev, toggleShortcut: shortcut }))

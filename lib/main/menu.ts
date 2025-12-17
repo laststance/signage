@@ -4,6 +4,7 @@ import { app, Menu, BrowserWindow } from 'electron'
 import type { VisualMode } from '@/lib/types/visualMode'
 
 import { openSettingsWindow } from './settingsWindow'
+import { checkForUpdates } from './updater'
 import { toggleSignageWindow } from './windowManager'
 
 // Visual mode state
@@ -128,6 +129,13 @@ export function createApplicationMenu(): Menu {
     {
       role: 'help' as const,
       submenu: [
+        {
+          label: 'Check for Updates...',
+          click: () => {
+            checkForUpdates().catch(console.error)
+          },
+        },
+        { type: 'separator' as const },
         {
           label: 'About Signage',
           click: async () => {

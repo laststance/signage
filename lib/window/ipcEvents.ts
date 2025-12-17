@@ -18,6 +18,7 @@ import {
   SHORTCUT_PRESETS,
 } from '../main/settings'
 import { isTrayVisible, setTrayVisibility } from '../main/trayManager'
+import { checkForUpdates, quitAndInstall } from '../main/updater'
 import { isDockHidden, setDockIconVisibility } from '../main/windowManager'
 
 const handleIPC = (channel: string, handler: (...args: any[]) => void) => {
@@ -115,4 +116,12 @@ export const registerWindowIPC = (mainWindow: BrowserWindow) => {
     return true
   })
   handleIPC('settings-get-login-item', () => app.getLoginItemSettings())
+
+  // Auto-update IPC handlers
+  handleIPC('update-check', async () => {
+    await checkForUpdates()
+  })
+  handleIPC('update-install', () => {
+    quitAndInstall()
+  })
 }

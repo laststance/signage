@@ -4,8 +4,9 @@
  * and converts them to Electron accelerator format.
  */
 import { useState, useCallback, useRef, useEffect } from 'react'
-import { Input } from '@/app/components/ui/input'
+
 import { Button } from '@/app/components/ui/button'
+import { Input } from '@/app/components/ui/input'
 import { cn } from '@/app/lib/utils'
 
 interface ShortcutInputProps {

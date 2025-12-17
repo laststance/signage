@@ -13,7 +13,11 @@ asarUnpack:
   - resources/**
 mac:
   target:
-    - target: default
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+    - target: zip
       arch:
         - x64
         - arm64
@@ -37,5 +41,7 @@ dmg:
   artifactName: ${name}-${version}-${arch}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  provider: github
+  owner: laststance
+  repo: signage
+  releaseType: release

@@ -5,7 +5,19 @@ import { app, BrowserWindow, shell } from 'electron'
 import { registerWindowIPC } from '@/lib/window/ipcEvents'
 import appIcon from '@/resources/build/icon.png?asset'
 
-import { setMainWindow } from './windowManager'
+import {
+  getMainWindow as getMainWindowFromManager,
+  setMainWindow,
+} from './windowManager'
+
+/**
+ * Gets the main BrowserWindow instance.
+ *
+ * @returns The main window or null if not created yet
+ */
+export function getMainWindow(): BrowserWindow | null {
+  return getMainWindowFromManager()
+}
 
 export function createAppWindow(): void {
   const mainWindow = new BrowserWindow({

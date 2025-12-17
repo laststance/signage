@@ -2,10 +2,10 @@
  * Settings Window Manager
  * Manages the creation and lifecycle of the Settings window
  */
-import { BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
 
 import { is } from '@electron-toolkit/utils'
+import { BrowserWindow, ipcMain, shell } from 'electron'
 
 /** Reference to the settings window */
 let settingsWindow: BrowserWindow | null = null

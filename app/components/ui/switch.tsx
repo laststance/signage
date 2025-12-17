@@ -2,8 +2,8 @@
  * Switch Component
  * Based on shadcn/ui Switch with Radix UI primitives
  */
-import * as React from 'react'
 import * as SwitchPrimitives from '@radix-ui/react-switch'
+import * as React from 'react'
 
 import { cn } from '@/app/lib/utils'
 

@@ -8,7 +8,9 @@
 import type { BrowserWindow } from 'electron'
 import log from 'electron-log'
 import type { ProgressInfo, UpdateInfo } from 'electron-updater'
-import { autoUpdater } from 'electron-updater'
+import electronUpdater from 'electron-updater'
+
+const { autoUpdater } = electronUpdater
 
 /** Update check interval: 4 hours in milliseconds */
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000

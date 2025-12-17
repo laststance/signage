@@ -4,9 +4,7 @@
  *
  * Features:
  * - Toggle Signage window visibility
- * - Toggle Dock icon visibility
  * - Visual mode switching (Default/Auto/Black Mirror)
- * - Start at login setting
  * - Standard native macOS menu style
  */
 import { app, Menu, nativeImage, Tray } from 'electron'
@@ -16,11 +14,7 @@ import type { VisualMode } from '@/lib/types/visualMode'
 import { getCurrentShortcut } from './globalShortcuts'
 import { DEFAULT_TOGGLE_SHORTCUT } from './settings'
 import { openSettingsWindow } from './settingsWindow'
-import {
-  isDockHidden,
-  toggleDockIcon,
-  toggleSignageWindow,
-} from './windowManager'
+import { toggleSignageWindow } from './windowManager'
 
 /** Global tray reference to prevent garbage collection */
 let tray: Tray | null = null
@@ -156,7 +150,6 @@ function buildTrayMenu(): Menu {
   const activeMode = getVisualModeCallback
     ? getVisualModeCallback()
     : currentVisualMode
-  const loginSettings = app.getLoginItemSettings()
   const currentShortcut = getCurrentShortcut()
 
   const template: Electron.MenuItemConstructorOptions[] = [
@@ -208,25 +201,6 @@ function buildTrayMenu(): Menu {
           currentVisualMode = 'blackmirror'
         }
         rebuildTrayMenu()
-      },
-    },
-    { type: 'separator' },
-    {
-      label: isDockHidden() ? 'Show App Icon' : 'Hide App Icon',
-      click: () => {
-        toggleDockIcon()
-        rebuildTrayMenu()
-      },
-    },
-    {
-      label: 'Start at Login',
-      type: 'checkbox',
-      checked: loginSettings.openAtLogin,
-      click: (menuItem) => {
-        app.setLoginItemSettings({
-          openAtLogin: menuItem.checked,
-          openAsHidden: true,
-        })
       },
     },
     { type: 'separator' },

@@ -3,13 +3,8 @@ import { app, Menu, BrowserWindow } from 'electron'
 
 import type { VisualMode } from '@/lib/types/visualMode'
 
-import { DEFAULT_TOGGLE_SHORTCUT } from './settings'
 import { openSettingsWindow } from './settingsWindow'
-import {
-  isDockHidden,
-  toggleDockIcon,
-  toggleSignageWindow,
-} from './windowManager'
+import { toggleSignageWindow } from './windowManager'
 
 // Visual mode state
 let currentVisualMode: VisualMode = 'default'
@@ -39,10 +34,6 @@ export function createApplicationMenu(): Menu {
           label: 'Toggle Signage',
           accelerator: 'CommandOrControl+Shift+S',
           click: () => toggleSignageWindow(),
-        },
-        {
-          label: isDockHidden() ? 'Show App Icon' : 'Hide App Icon',
-          click: () => toggleDockIcon(),
         },
         { type: 'separator' as const },
         {

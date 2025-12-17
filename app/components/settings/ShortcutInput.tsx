@@ -182,7 +182,7 @@ export default function ShortcutInput({
 
   return (
     <div className={cn('flex gap-2', className)}>
-      <div className="relative flex-1">
+      <div className="flex-1">
         <Input
           ref={inputRef}
           type="text"
@@ -196,13 +196,6 @@ export default function ShortcutInput({
             isRecording && 'ring-2 ring-blue-500 ring-offset-2',
           )}
         />
-        {isRecording && (
-          <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-            <span className="animate-pulse text-muted-foreground text-sm">
-              Recording...
-            </span>
-          </div>
-        )}
       </div>
       {value && (
         <Button

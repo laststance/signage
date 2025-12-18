@@ -12,6 +12,7 @@ import {
   setTrayRebuildCallback,
   setVisualMode,
 } from './menu'
+import { getHideAppIcon, getShowInMenuBar } from './settings'
 import { registerSettingsWindowIPC } from './settingsWindow'
 import {
   createTray,
@@ -20,6 +21,7 @@ import {
 } from './trayManager'
 import { initializeUpdater } from './updater'
 import {
+  setDockIconVisibility,
   setMenuRebuildCallback,
   setTrayRebuildCallback as setWindowManagerTrayCallback,
 } from './windowManager'
@@ -29,6 +31,13 @@ import {
 app.whenReady().then(() => {
   // Set app user model id
   electronApp.setAppUserModelId('com.laststance.signage')
+
+  // Apply saved dock icon visibility setting at startup
+  // Must be done early before window creation for consistent state
+  const hideAppIcon = getHideAppIcon()
+  if (hideAppIcon) {
+    setDockIconVisibility(true)
+  }
 
   // Set menu rebuild callback for windowManager
   setMenuRebuildCallback(createApplicationMenu)
@@ -43,9 +52,12 @@ app.whenReady().then(() => {
   const menu = createApplicationMenu()
   Menu.setApplicationMenu(menu)
 
-  // Create system tray with visual mode sync callbacks
+  // Create system tray with visual mode sync callbacks (if enabled in settings)
   setVisualModeCallbacks(getVisualModeState, setVisualMode)
-  createTray()
+  const showInMenuBar = getShowInMenuBar()
+  if (showInMenuBar) {
+    createTray()
+  }
 
   // Register global shortcuts (works even when app is not focused)
   registerGlobalShortcuts()

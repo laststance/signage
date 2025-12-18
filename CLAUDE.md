@@ -235,12 +235,13 @@ APPLE_KEYCHAIN_PROFILE=signage-notarize pnpm build:mac:intel
 
 Build outputs in `dist/`:
 
-| File                          | Description       |
-| ----------------------------- | ----------------- |
-| `signage-X.Y.Z-arm64.dmg`     | Apple Silicon DMG |
-| `signage-X.Y.Z-x64.dmg`       | Intel DMG         |
-| `Signage-X.Y.Z-arm64-mac.zip` | Apple Silicon ZIP |
-| `Signage-X.Y.Z-mac.zip`       | Intel ZIP         |
+| File                          | Description                         |
+| ----------------------------- | ----------------------------------- |
+| `signage-X.Y.Z-arm64.dmg`     | Apple Silicon DMG                   |
+| `signage-X.Y.Z-x64.dmg`       | Intel DMG                           |
+| `Signage-X.Y.Z-arm64-mac.zip` | Apple Silicon ZIP                   |
+| `Signage-X.Y.Z-mac.zip`       | Intel ZIP                           |
+| `latest-mac.yml`              | **Auto-update manifest (REQUIRED)** |
 
 ### 3. Create GitHub Release
 
@@ -261,8 +262,11 @@ EOF
   dist/signage-X.Y.Z-arm64.dmg \
   dist/signage-X.Y.Z-x64.dmg \
   dist/Signage-X.Y.Z-arm64-mac.zip \
-  dist/Signage-X.Y.Z-mac.zip
+  dist/Signage-X.Y.Z-mac.zip \
+  dist/latest-mac.yml
 ```
+
+**IMPORTANT**: Always include `latest-mac.yml` - without it, auto-update will fail with 404 error.
 
 ### 4. Update Landing Page Download Links
 

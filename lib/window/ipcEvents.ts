@@ -17,7 +17,11 @@ import {
   setStartAtLogin,
   SHORTCUT_PRESETS,
 } from '../main/settings'
-import { isTrayVisible, setTrayVisibility } from '../main/trayManager'
+import {
+  isTrayVisible,
+  rebuildTrayMenu,
+  setTrayVisibility,
+} from '../main/trayManager'
 import { checkForUpdates, quitAndInstall } from '../main/updater'
 import { isDockHidden, setDockIconVisibility } from '../main/windowManager'
 
@@ -84,10 +88,20 @@ export const registerWindowIPC = (mainWindow: BrowserWindow) => {
   // Global shortcut IPC handlers
   handleIPC('shortcut-get-current', () => getCurrentShortcut())
   handleIPC('shortcut-get-presets', () => SHORTCUT_PRESETS)
-  handleIPC('shortcut-change', (_e, newShortcut: string) =>
-    changeToggleShortcut(newShortcut),
-  )
-  handleIPC('shortcut-reset', () => resetToggleShortcut())
+  handleIPC('shortcut-change', (_e, newShortcut: string) => {
+    const success = changeToggleShortcut(newShortcut)
+    if (success) {
+      rebuildTrayMenu()
+    }
+    return success
+  })
+  handleIPC('shortcut-reset', () => {
+    const success = resetToggleShortcut()
+    if (success) {
+      rebuildTrayMenu()
+    }
+    return success
+  })
 
   // Settings IPC handlers
   handleIPC('settings-get-show-in-menu-bar', () => getShowInMenuBar())

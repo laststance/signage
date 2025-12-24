@@ -11,8 +11,7 @@ import { app, Menu, nativeImage, Tray } from 'electron'
 
 import type { VisualMode } from '@/lib/types/visualMode'
 
-import { getCurrentShortcut } from './globalShortcuts'
-import { DEFAULT_TOGGLE_SHORTCUT } from './settings'
+import { getToggleShortcut } from './settings'
 import { openSettingsWindow } from './settingsWindow'
 import { toggleSignageWindow } from './windowManager'
 
@@ -150,12 +149,11 @@ function buildTrayMenu(): Menu {
   const activeMode = getVisualModeCallback
     ? getVisualModeCallback()
     : currentVisualMode
-  const currentShortcut = getCurrentShortcut()
 
   const template: Electron.MenuItemConstructorOptions[] = [
     {
       label: 'Toggle Signage',
-      accelerator: currentShortcut || DEFAULT_TOGGLE_SHORTCUT,
+      accelerator: getToggleShortcut(),
       click: () => toggleSignageWindow(),
     },
     {

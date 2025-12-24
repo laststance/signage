@@ -3,6 +3,7 @@ import { app, Menu, BrowserWindow } from 'electron'
 
 import type { VisualMode } from '@/lib/types/visualMode'
 
+import { getToggleShortcut } from './settings'
 import { openSettingsWindow } from './settingsWindow'
 import { checkForUpdates } from './updater'
 import { toggleSignageWindow } from './windowManager'
@@ -33,7 +34,7 @@ export function createApplicationMenu(): Menu {
         { type: 'separator' as const },
         {
           label: 'Toggle Signage',
-          accelerator: 'CommandOrControl+Shift+S',
+          accelerator: getToggleShortcut(),
           click: () => toggleSignageWindow(),
         },
         { type: 'separator' as const },

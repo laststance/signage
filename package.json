@@ -1,6 +1,6 @@
 {
   "name": "signage",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "Self Screen Saver App",
   "main": "./out/main/main.js",
   "type": "module",

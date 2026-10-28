@@ -154,19 +154,19 @@ function buildTrayMenu(): Menu {
     {
       label: 'Toggle Signage',
       accelerator: getToggleShortcut(),
-      click: () => toggleSignageWindow(),
+      click: (): void => toggleSignageWindow(),
     },
     {
       label: 'Settings...',
       accelerator: 'CommandOrControl+,',
-      click: () => openSettingsWindow(),
+      click: (): void => openSettingsWindow(),
     },
     { type: 'separator' },
     {
       label: 'Default Mode',
       type: 'radio',
       checked: activeMode === 'default',
-      click: () => {
+      click: (): void => {
         if (setVisualModeCallback) {
           setVisualModeCallback('default')
         } else {
@@ -179,7 +179,7 @@ function buildTrayMenu(): Menu {
       label: 'Auto Mode',
       type: 'radio',
       checked: activeMode === 'auto',
-      click: () => {
+      click: (): void => {
         if (setVisualModeCallback) {
           setVisualModeCallback('auto')
         } else {
@@ -192,7 +192,7 @@ function buildTrayMenu(): Menu {
       label: 'Black Mirror Mode',
       type: 'radio',
       checked: activeMode === 'blackmirror',
-      click: () => {
+      click: (): void => {
         if (setVisualModeCallback) {
           setVisualModeCallback('blackmirror')
         } else {
@@ -205,7 +205,7 @@ function buildTrayMenu(): Menu {
     {
       label: 'Quit Signage',
       accelerator: 'CommandOrControl+Q',
-      click: () => app.quit(),
+      click: (): void => app.quit(),
     },
   ]
 

@@ -25,11 +25,14 @@ import {
 import { checkForUpdates, quitAndInstall } from '../main/updater'
 import { isDockHidden, setDockIconVisibility } from '../main/windowManager'
 
-const handleIPC = (channel: string, handler: (...args: any[]) => void) => {
+const handleIPC = (
+  channel: string,
+  handler: (...args: any[]) => void,
+): void => {
   ipcMain.handle(channel, handler)
 }
 
-export const registerWindowIPC = (mainWindow: BrowserWindow) => {
+export const registerWindowIPC = (mainWindow: BrowserWindow): void => {
   // Hide the menu bar
   mainWindow.setMenuBarVisibility(false)
 

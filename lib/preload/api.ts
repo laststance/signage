@@ -16,16 +16,16 @@ export interface UpdateProgress {
 }
 
 const api = {
-  send: (channel: string, ...args: any[]) => {
+  send: (channel: string, ...args: any[]): void => {
     ipcRenderer.send(channel, ...args)
   },
-  receive: (channel: string, func: (...args: any[]) => void) => {
+  receive: (channel: string, func: (...args: any[]) => void): void => {
     ipcRenderer.on(channel, (_, ...args) => func(...args))
   },
   invoke: async (channel: string, ...args: any[]) => {
     return ipcRenderer.invoke(channel, ...args)
   },
-  removeAllListeners: (channel: string) => {
+  removeAllListeners: (channel: string): void => {
     ipcRenderer.removeAllListeners(channel)
   },
 
@@ -48,7 +48,7 @@ const api = {
      * Registers a callback for when update check starts.
      * @param callback - Function called when checking for updates
      */
-    onChecking: (callback: () => void) => {
+    onChecking: (callback: () => void): void => {
       ipcRenderer.on('update-checking', () => callback())
     },
 
@@ -56,7 +56,7 @@ const api = {
      * Registers a callback for when an update is available.
      * @param callback - Function called with update info
      */
-    onUpdateAvailable: (callback: (info: UpdateInfo) => void) => {
+    onUpdateAvailable: (callback: (info: UpdateInfo) => void): void => {
       ipcRenderer.on('update-available', (_, info) => callback(info))
     },
 
@@ -64,7 +64,7 @@ const api = {
      * Registers a callback for when no update is available.
      * @param callback - Function called when already up to date
      */
-    onUpdateNotAvailable: (callback: () => void) => {
+    onUpdateNotAvailable: (callback: () => void): void => {
       ipcRenderer.on('update-not-available', () => callback())
     },
 
@@ -72,7 +72,7 @@ const api = {
      * Registers a callback for download progress updates.
      * @param callback - Function called with progress info
      */
-    onProgress: (callback: (progress: UpdateProgress) => void) => {
+    onProgress: (callback: (progress: UpdateProgress) => void): void => {
       ipcRenderer.on('update-progress', (_, progress) => callback(progress))
     },
 
@@ -80,7 +80,7 @@ const api = {
      * Registers a callback for when update is downloaded and ready.
      * @param callback - Function called with update info
      */
-    onUpdateDownloaded: (callback: (info: UpdateInfo) => void) => {
+    onUpdateDownloaded: (callback: (info: UpdateInfo) => void): void => {
       ipcRenderer.on('update-downloaded', (_, info) => callback(info))
     },
 
@@ -88,14 +88,14 @@ const api = {
      * Registers a callback for update errors.
      * @param callback - Function called with error message
      */
-    onError: (callback: (message: string) => void) => {
+    onError: (callback: (message: string) => void): void => {
       ipcRenderer.on('update-error', (_, message) => callback(message))
     },
 
     /**
      * Removes all update-related event listeners.
      */
-    removeAllListeners: () => {
+    removeAllListeners: (): void => {
       ipcRenderer.removeAllListeners('update-checking')
       ipcRenderer.removeAllListeners('update-available')
       ipcRenderer.removeAllListeners('update-not-available')

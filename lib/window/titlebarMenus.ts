@@ -12,8 +12,6 @@ export interface TitlebarMenuItem {
   items?: TitlebarMenuItem[]
 }
 
-
-
 export const menuItems: TitlebarMenu[] = [
   {
     name: 'File',
@@ -122,7 +120,7 @@ export const menuItems: TitlebarMenu[] = [
         name: 'Dark Mode',
         action: 'window-darkmode-toggle',
         shortcut: 'Toggle',
-        actionCallback: () => {
+        actionCallback: (): void => {
           document.documentElement.classList.toggle('light')
         },
       },

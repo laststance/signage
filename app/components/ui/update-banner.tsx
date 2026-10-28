@@ -17,12 +17,7 @@ import { Button } from './button'
 
 /** Update state types */
 type UpdateState =
-  | 'idle'
-  | 'checking'
-  | 'available'
-  | 'downloading'
-  | 'ready'
-  | 'error'
+  'idle' | 'checking' | 'available' | 'downloading' | 'ready' | 'error'
 
 /** Update info from main process */
 interface UpdateInfo {
@@ -156,7 +151,7 @@ export function UpdateBanner({ demoState }: UpdateBannerProps) {
     })
 
     // Cleanup listeners on unmount
-    return () => {
+    return (): void => {
       api.update.removeAllListeners()
     }
   }, [demoState])
@@ -164,7 +159,7 @@ export function UpdateBanner({ demoState }: UpdateBannerProps) {
   /**
    * Handles the restart action to install update.
    */
-  const handleRestart = () => {
+  const handleRestart = (): void => {
     if (demoState !== undefined) {
       // In demo mode, just dismiss the banner
       setIsDismissed(true)
@@ -176,7 +171,7 @@ export function UpdateBanner({ demoState }: UpdateBannerProps) {
   /**
    * Handles manual update check.
    */
-  const handleCheckForUpdates = () => {
+  const handleCheckForUpdates = (): void => {
     if (demoState !== undefined) {
       // In demo mode, just dismiss the banner
       setIsDismissed(true)
@@ -188,7 +183,7 @@ export function UpdateBanner({ demoState }: UpdateBannerProps) {
   /**
    * Dismisses the banner.
    */
-  const handleDismiss = () => {
+  const handleDismiss = (): void => {
     setIsDismissed(true)
   }
 

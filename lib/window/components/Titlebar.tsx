@@ -12,7 +12,7 @@ export const Titlebar = () => {
   const wcontext = useWindowContext().window
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent): void => {
       if (e.altKey && menuItems?.length) {
         // Ignore repeated keydown events
         if (e.repeat) return
@@ -25,7 +25,7 @@ export const Titlebar = () => {
     // Add event listener for Alt key
     document.addEventListener('keydown', handleKeyDown)
 
-    return () => {
+    return (): void => {
       document.removeEventListener('keydown', handleKeyDown)
     }
   }, [menusVisible])
@@ -71,7 +71,7 @@ const TitlebarMenuItem = ({
   const { activeMenuIndex, setActiveMenuIndex } = useTitlebarContext()
   const menuItemRef = useRef<HTMLDivElement | null>(null)
 
-  const togglePopup = (e: React.MouseEvent) => {
+  const togglePopup = (e: React.MouseEvent): void => {
     e.preventDefault()
     e.stopPropagation()
 
@@ -87,13 +87,13 @@ const TitlebarMenuItem = ({
     }
   }
 
-  const handleMouseOver = () => {
+  const handleMouseOver = (): void => {
     if (activeMenuIndex != null) {
       setActiveMenuIndex(index)
     }
   }
 
-  const handleClickOutside = (event: MouseEvent) => {
+  const handleClickOutside = (event: MouseEvent): void => {
     if (
       menuItemRef.current &&
       !menuItemRef.current.contains(event.target as Node) &&
@@ -105,7 +105,7 @@ const TitlebarMenuItem = ({
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside)
-    return () => {
+    return (): void => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
@@ -146,7 +146,7 @@ const TitlebarMenuPopup = ({ menu }: { menu: TitlebarMenu }) => {
 const TitlebarMenuPopupItem = ({ item }: { item: TitlebarMenuItem }) => {
   const { setActiveMenuIndex } = useTitlebarContext()
 
-  function handleAction() {
+  function handleAction(): void {
     // Check if the item has a valid action callback
     if (typeof item.actionCallback === 'function') {
       item.actionCallback()

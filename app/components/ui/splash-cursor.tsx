@@ -63,7 +63,7 @@ export default function SplashCursor({
 
   // Handle visual mode state changes
   useEffect(() => {
-    const handleModeChange = (mode: VisualMode) => {
+    const handleModeChange = (mode: VisualMode): void => {
       setVisualMode(mode)
       visualModeRef.current = mode
     }
@@ -81,7 +81,7 @@ export default function SplashCursor({
         })
     }
 
-    return () => {
+    return (): void => {
       if (window.api) {
         window.api.removeAllListeners('visual-mode-changed')
       }
@@ -92,7 +92,7 @@ export default function SplashCursor({
   useEffect(() => {
     if (visualMode === 'auto') {
       // Start auto mode with random movements every 100-500ms
-      const startAutoMode = () => {
+      const startAutoMode = (): void => {
         const randomInterval = 100 + Math.random() * 400
         autoModeIntervalRef.current = setTimeout(() => {
           generateRandomMovement()
@@ -108,7 +108,7 @@ export default function SplashCursor({
       }
     }
 
-    return () => {
+    return (): void => {
       if (autoModeIntervalRef.current) {
         clearTimeout(autoModeIntervalRef.current)
       }
@@ -280,7 +280,7 @@ export default function SplashCursor({
         this.activeProgram = null
         this.uniforms = []
       }
-      setKeywords(keywords) {
+      setKeywords(keywords): void {
         let hash = 0
         for (let i = 0; i < keywords.length; i++) hash += hashCode(keywords[i])
         let program = this.programs[hash]
@@ -297,7 +297,7 @@ export default function SplashCursor({
         this.uniforms = getUniforms(program)
         this.activeProgram = program
       }
-      bind() {
+      bind(): void {
         gl.useProgram(this.activeProgram)
       }
     }
@@ -311,7 +311,7 @@ export default function SplashCursor({
         this.program = createProgram(vertexShader, fragmentShader)
         this.uniforms = getUniforms(this.program)
       }
-      bind() {
+      bind(): void {
         gl.useProgram(this.program)
       }
     }
@@ -665,7 +665,7 @@ export default function SplashCursor({
       )
       gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0)
       gl.enableVertexAttribArray(0)
-      return (target, clear = false) => {
+      return (target, clear = false): void => {
         if (target == null) {
           gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight)
           gl.bindFramebuffer(gl.FRAMEBUFFER, null)
@@ -697,7 +697,7 @@ export default function SplashCursor({
     )
     const displayMaterial = new Material(baseVertexShader, displayShaderSource)
 
-    function initFramebuffers() {
+    function initFramebuffers(): void {
       const simRes = getResolution(config.SIM_RESOLUTION)
       const dyeRes = getResolution(config.DYE_RESOLUTION)
       const texType = ext.halfFloatTexType
@@ -842,7 +842,7 @@ export default function SplashCursor({
         set write(value) {
           fbo2 = value
         },
-        swap() {
+        swap(): void {
           const temp = fbo1
           fbo1 = fbo2
           fbo2 = temp
@@ -885,7 +885,7 @@ export default function SplashCursor({
       return target
     }
 
-    function updateKeywords() {
+    function updateKeywords(): void {
       const displayKeywords: string[] = []
       if (config.SHADING) displayKeywords.push('SHADING')
       displayMaterial.setKeywords(displayKeywords)
@@ -896,7 +896,7 @@ export default function SplashCursor({
     let lastUpdateTime = Date.now()
     let colorUpdateTimer = 0.0
 
-    function updateFrame() {
+    function updateFrame(): void {
       const dt = calcDeltaTime()
       if (resizeCanvas()) initFramebuffers()
       updateColors(dt)
@@ -926,7 +926,7 @@ export default function SplashCursor({
       return false
     }
 
-    function updateColors(dt) {
+    function updateColors(dt): void {
       colorUpdateTimer += dt * config.COLOR_UPDATE_SPEED
       if (colorUpdateTimer >= 1) {
         colorUpdateTimer = wrap(colorUpdateTimer, 0, 1)
@@ -936,7 +936,7 @@ export default function SplashCursor({
       }
     }
 
-    function applyInputs() {
+    function applyInputs(): void {
       pointers.forEach((p) => {
         if (p.moved) {
           p.moved = false
@@ -945,7 +945,7 @@ export default function SplashCursor({
       })
     }
 
-    function step(dt) {
+    function step(dt): void {
       gl.disable(gl.BLEND)
       // Curl
       curlProgram.bind()
@@ -1066,13 +1066,13 @@ export default function SplashCursor({
       dye.swap()
     }
 
-    function render(target) {
+    function render(target): void {
       gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA)
       gl.enable(gl.BLEND)
       drawDisplay(target)
     }
 
-    function drawDisplay(target) {
+    function drawDisplay(target): void {
       const width = target == null ? gl.drawingBufferWidth : target.width
       const height = target == null ? gl.drawingBufferHeight : target.height
       displayMaterial.bind()
@@ -1086,13 +1086,13 @@ export default function SplashCursor({
       blit(target)
     }
 
-    function splatPointer(pointer) {
+    function splatPointer(pointer): void {
       const dx = pointer.deltaX * config.SPLAT_FORCE
       const dy = pointer.deltaY * config.SPLAT_FORCE
       splat(pointer.texcoordX, pointer.texcoordY, dx, dy, pointer.color)
     }
 
-    function clickSplat(pointer) {
+    function clickSplat(pointer): void {
       const color = generateColor()
       color.r *= 10.0
       color.g *= 10.0
@@ -1102,7 +1102,7 @@ export default function SplashCursor({
       splat(pointer.texcoordX, pointer.texcoordY, dx, dy, color)
     }
 
-    function splat(x, y, dx, dy, color) {
+    function splat(x, y, dx, dy, color): void {
       splatProgram.bind()
       gl.uniform1i(splatProgram.uniforms.uTarget, velocity.read.attach(0))
       gl.uniform1f(
@@ -1130,7 +1130,7 @@ export default function SplashCursor({
       return radius
     }
 
-    function updatePointerDownData(pointer, id, posX, posY) {
+    function updatePointerDownData(pointer, id, posX, posY): void {
       pointer.id = id
       pointer.down = true
       pointer.moved = false
@@ -1143,7 +1143,7 @@ export default function SplashCursor({
       pointer.color = generateColor()
     }
 
-    function updatePointerMoveData(pointer, posX, posY, color) {
+    function updatePointerMoveData(pointer, posX, posY, color): void {
       pointer.prevTexcoordX = pointer.texcoordX
       pointer.prevTexcoordY = pointer.texcoordY
       pointer.texcoordX = posX / canvas!.width
@@ -1155,7 +1155,7 @@ export default function SplashCursor({
       pointer.color = color
     }
 
-    function updatePointerUpData(pointer) {
+    function updatePointerUpData(pointer): void {
       pointer.down = false
     }
 
@@ -1254,7 +1254,7 @@ export default function SplashCursor({
       return hash
     }
 
-    const handleMouseDown = (e) => {
+    const handleMouseDown = (e): void => {
       if (visualModeRef.current !== 'default') return // Skip events in non-default modes
       const pointer = pointers[0]
       const posX = scaleByPixelRatio(e.clientX)
@@ -1279,7 +1279,7 @@ export default function SplashCursor({
       },
     )
 
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e): void => {
       if (visualModeRef.current !== 'default') return // Skip events in non-default modes
       const pointer = pointers[0]
       const posX = scaleByPixelRatio(e.clientX)
@@ -1306,7 +1306,7 @@ export default function SplashCursor({
       },
     )
 
-    const handleTouchStart = (e) => {
+    const handleTouchStart = (e): void => {
       if (visualModeRef.current !== 'default') return // Skip events in non-default modes
       const touches = e.targetTouches
       const pointer = pointers[0]
@@ -1319,7 +1319,7 @@ export default function SplashCursor({
 
     window.addEventListener('touchstart', handleTouchStart)
 
-    const handleTouchMove = (e) => {
+    const handleTouchMove = (e): void => {
       if (visualModeRef.current !== 'default') return // Skip events in non-default modes
       const touches = e.targetTouches
       const pointer = pointers[0]
@@ -1332,7 +1332,7 @@ export default function SplashCursor({
 
     window.addEventListener('touchmove', handleTouchMove, false)
 
-    const handleTouchEnd = (e) => {
+    const handleTouchEnd = (e): void => {
       if (visualModeRef.current !== 'default') return // Skip events in non-default modes
       const touches = e.changedTouches
       const pointer = pointers[0]
@@ -1355,7 +1355,7 @@ export default function SplashCursor({
     updateFrame()
 
     // Cleanup on unmount
-    return () => {
+    return (): void => {
       if (autoModeIntervalRef.current) {
         clearTimeout(autoModeIntervalRef.current)
       }

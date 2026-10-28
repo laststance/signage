@@ -46,7 +46,7 @@ export default function SettingsPage() {
 
   // Load current settings on mount
   useEffect(() => {
-    const loadSettings = async () => {
+    const loadSettings = async (): Promise<void> => {
       try {
         const [currentShortcut, showInMenuBar, hideAppIcon, startAtLogin] =
           await Promise.all([

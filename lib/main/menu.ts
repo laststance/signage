@@ -35,32 +35,32 @@ export function createApplicationMenu(): Menu {
         {
           label: 'Toggle Signage',
           accelerator: getToggleShortcut(),
-          click: () => toggleSignageWindow(),
+          click: (): void => toggleSignageWindow(),
         },
         { type: 'separator' as const },
         {
           label: 'Settings...',
           accelerator: 'CommandOrControl+,',
-          click: () => openSettingsWindow(),
+          click: (): void => openSettingsWindow(),
         },
         { type: 'separator' as const },
         {
           label: 'Default Mode',
           type: 'radio' as const,
           checked: currentVisualMode === 'default',
-          click: () => setVisualMode('default'),
+          click: (): void => setVisualMode('default'),
         },
         {
           label: 'Auto Mode',
           type: 'radio' as const,
           checked: currentVisualMode === 'auto',
-          click: () => setVisualMode('auto'),
+          click: (): void => setVisualMode('auto'),
         },
         {
           label: 'Black Mirror Mode',
           type: 'radio' as const,
           checked: currentVisualMode === 'blackmirror',
-          click: () => setVisualMode('blackmirror'),
+          click: (): void => setVisualMode('blackmirror'),
         },
         { type: 'separator' as const },
         { role: 'services' as const },
@@ -132,14 +132,14 @@ export function createApplicationMenu(): Menu {
       submenu: [
         {
           label: 'Check for Updates...',
-          click: () => {
+          click: (): void => {
             checkForUpdates().catch(console.error)
           },
         },
         { type: 'separator' as const },
         {
           label: 'About Signage',
-          click: async () => {
+          click: async (): Promise<void> => {
             const { shell } = await import('electron')
             await shell.openExternal('https://laststance.io')
           },

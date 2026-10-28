@@ -8,15 +8,29 @@ interface TitlebarContextProps {
   closeActiveMenu: () => void
 }
 
-const TitlebarContext = createContext<TitlebarContextProps | undefined>(undefined)
+const TitlebarContext = createContext<TitlebarContextProps | undefined>(
+  undefined,
+)
 
-export const TitlebarContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const TitlebarContextProvider = ({
+  children,
+}: {
+  children: React.ReactNode
+}) => {
   const [activeMenuIndex, setActiveMenuIndex] = useState<number | null>(null)
   const [menusVisible, setMenusVisible] = useState(false)
-  const closeActiveMenu = () => setActiveMenuIndex(null)
+  const closeActiveMenu = (): void => setActiveMenuIndex(null)
 
   return (
-    <TitlebarContext value={{ activeMenuIndex, setActiveMenuIndex, menusVisible, setMenusVisible, closeActiveMenu }}>
+    <TitlebarContext
+      value={{
+        activeMenuIndex,
+        setActiveMenuIndex,
+        menusVisible,
+        setMenusVisible,
+        closeActiveMenu,
+      }}
+    >
       {children}
     </TitlebarContext>
   )

@@ -1,0 +1,26 @@
+#!/bin/bash
+# codesign wrapper: retries signing when Apple's timestamp server flakes.
+#
+# electron-builder invokes `codesign` through PATH, so placing this earlier in
+# PATH lets each signing request retry on "A timestamp was expected but was not
+# found" instead of aborting the whole build. Non-signing calls (verify,
+# display) pass straight through.
+
+case " $*" in
+  *" --sign"*) ;;
+  *)
+    exec /usr/bin/codesign "$@"
+    ;;
+esac
+
+status=0
+for attempt in $(seq 1 10); do
+  /usr/bin/codesign "$@"
+  status=$?
+  if [ "$status" -eq 0 ]; then
+    exit 0
+  fi
+  echo "codesign: attempt $attempt failed (status $status), retrying..." >&2
+  sleep 3
+done
+exit "$status"

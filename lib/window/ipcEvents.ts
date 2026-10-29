@@ -128,7 +128,6 @@ export const registerWindowIPC = (mainWindow: BrowserWindow): void => {
     setStartAtLogin(start)
     app.setLoginItemSettings({
       openAtLogin: start,
-      openAsHidden: true,
     })
     return true
   })

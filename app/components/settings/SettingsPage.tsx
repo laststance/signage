@@ -215,7 +215,7 @@ export default function SettingsPage() {
               <div className="space-y-0.5">
                 <Label htmlFor="hide-app-icon">Hide App Icon</Label>
                 <p className="text-xs text-muted-foreground">
-                  Hide Signage from the Dock
+                  Hide Signage from the Dock when not in use
                 </p>
               </div>
               <Switch

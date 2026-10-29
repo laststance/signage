@@ -15,6 +15,15 @@ export default defineConfig([
     ],
   },
   {
+    languageOptions: {
+      parserOptions: {
+        projectService: {
+          allowDefaultProject: ['*.js', 'scripts/*.cjs', 'scripts/*.mjs'],
+        },
+      },
+    },
+  },
+  {
     rules: {
       // Allow == null for checking both null and undefined
       eqeqeq: ['error', 'always', { null: 'ignore' }],

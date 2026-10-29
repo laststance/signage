@@ -21,6 +21,7 @@ import {
 } from './trayManager'
 import { initializeUpdater } from './updater'
 import {
+  initializeDockIconVisibility,
   setDockIconVisibility,
   setMenuRebuildCallback,
   setTrayRebuildCallback as setWindowManagerTrayCallback,
@@ -32,12 +33,9 @@ app.whenReady().then(() => {
   // Set app user model id
   electronApp.setAppUserModelId('com.laststance.signage')
 
-  // Apply saved dock icon visibility setting at startup
-  // Must be done early before window creation for consistent state
-  const hideAppIcon = getHideAppIcon()
-  if (hideAppIcon) {
-    setDockIconVisibility(true)
-  }
+  // Restore native menus on focus even when the saved Dock preference is hidden.
+  initializeDockIconVisibility()
+  setDockIconVisibility(getHideAppIcon())
 
   // Set menu rebuild callback for windowManager
   setMenuRebuildCallback(createApplicationMenu)

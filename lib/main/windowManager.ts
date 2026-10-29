@@ -14,6 +14,9 @@ let mainWindow: BrowserWindow | null = null
 /** Whether the Dock icon is currently hidden */
 let isDockIconHidden = false
 
+/** User preference; focused windows must retain the native application menu. */
+let hideDockIconInBackground = false
+
 /** Callback to rebuild the application menu when state changes */
 let menuRebuildCallback: (() => Menu) | null = null
 
@@ -58,6 +61,37 @@ export function setMenuRebuildCallback(callback: () => Menu): void {
  */
 export function setTrayRebuildCallback(callback: () => void): void {
   trayRebuildCallback = callback
+}
+
+/**
+ * Keeps the native menu accessible while any Signage window is focused.
+ *
+ * Called by {@link setDockIconVisibility} and the application focus listeners.
+ * macOS accessory apps have no application menu, even with a focused window.
+ */
+function syncDockIconVisibility(): void {
+  const hidden =
+    hideDockIconInBackground && BrowserWindow.getFocusedWindow() === null
+
+  // Avoid repeating activation changes, which can themselves affect focus.
+  if (hidden === isDockIconHidden) return
+
+  isDockIconHidden = hidden
+  app.setActivationPolicy(hidden ? 'accessory' : 'regular')
+}
+
+/**
+ * Registers application-wide focus handling before startup creates windows.
+ *
+ * Called once by the main entry point so both the screensaver and Settings
+ * restore their application menu without changing the saved Dock preference.
+ */
+export function initializeDockIconVisibility(): void {
+  app.on('browser-window-focus', syncDockIconVisibility)
+  app.on('browser-window-blur', () => {
+    // Let focus transfer to another Signage window before hiding its menu.
+    setImmediate(syncDockIconVisibility)
+  })
 }
 
 /**
@@ -112,36 +146,12 @@ export function toggleSignageWindow(createWindowFn?: () => void): void {
 }
 
 /**
- * Toggles the Dock icon visibility on macOS.
+ * Toggles the background Dock preference through {@link setDockIconVisibility}.
  *
- * Uses activation policy:
- * - 'regular': App appears in Dock with menu bar
- * - 'accessory': App hidden from Dock, no menu bar when unfocused
- *
- * Note: When in 'accessory' mode, the app's menu bar is only visible
- * when a window is focused. User must click the window to access menus.
+ * Focused windows keep the Dock icon and application menu available.
  */
 export function toggleDockIcon(): void {
-  if (isDockIconHidden) {
-    // Show the Dock icon
-    app.setActivationPolicy('regular')
-    isDockIconHidden = false
-  } else {
-    // Hide the Dock icon
-    app.setActivationPolicy('accessory')
-    isDockIconHidden = true
-  }
-
-  // Rebuild app menu to update label
-  if (menuRebuildCallback) {
-    const menu = menuRebuildCallback()
-    Menu.setApplicationMenu(menu)
-  }
-
-  // Rebuild tray menu to update label
-  if (trayRebuildCallback) {
-    trayRebuildCallback()
-  }
+  setDockIconVisibility(!hideDockIconInBackground)
 }
 
 /**
@@ -153,22 +163,15 @@ export function isDockHidden(): boolean {
 }
 
 /**
- * Sets the Dock icon visibility directly.
+ * Applies the Dock preference at startup or when Settings changes it.
  *
- * @param hidden - true to hide the Dock icon, false to show it
+ * {@link syncDockIconVisibility} keeps the native menu available during use.
+ *
+ * @param hidden - Whether to hide the Dock icon while Signage is unfocused.
  */
 export function setDockIconVisibility(hidden: boolean): void {
-  if (hidden === isDockIconHidden) {
-    return // No change needed
-  }
-
-  if (hidden) {
-    app.setActivationPolicy('accessory')
-    isDockIconHidden = true
-  } else {
-    app.setActivationPolicy('regular')
-    isDockIconHidden = false
-  }
+  hideDockIconInBackground = hidden
+  syncDockIconVisibility()
 
   // Rebuild app menu to update label
   if (menuRebuildCallback) {
